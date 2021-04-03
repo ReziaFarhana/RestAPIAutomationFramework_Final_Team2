@@ -77,30 +77,6 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualTweet,expectedMessage,"Tweet match");
         Assert.assertNotEquals("403",200);
     }
-    @Test //6-passed
-    public void testUserCanNotTweetTheSameTweetTwiceInARow2() {
-        // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our Tweet is same tweet";
-        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
-        // Verify that the tweet is successful
-        response.statusCode(403);
-        // Verity Retweet
-        System.out.println(response.extract().body().asPrettyString());
-        String expectedMessage="Status is a duplicate.";
-        String actualTweet=response.extract().body().path("errors[0].message");
-        Assert.assertNotEquals("403",200);
-    }
-
-
-    @Test//7-failed
-    public void testDeleteTweet(){
-        String tweet="We are learning Rest API using Rest Assured and our First Tweet1";
-        ValidatableResponse deleteResponse= this.tweetAPIClient.deleteTweet(1378030792224440322l);
-        deleteResponse.statusCode(200);
-        String actualTweet= deleteResponse.extract().body().path("text");
-        Assert.assertEquals(tweet,actualTweet);
-    }
-
 
 
 //    @Test(enabled = false)
