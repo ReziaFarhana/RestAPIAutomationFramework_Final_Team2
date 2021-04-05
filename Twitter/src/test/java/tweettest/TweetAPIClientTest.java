@@ -17,65 +17,121 @@ public class TweetAPIClientTest {
         this.tweetAPIClient = new TweetAPIClient();
     }
 
-    @Test//create tweet-1 passed
+
+    @Test //1
     public void testUserCanTweetSuccessfully() {
-        // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our First Tweet";
-        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
-        // Verify that the tweet is successful
-        response.statusCode(200);
-        // Verify tweet value
-        String actualTweet=response.extract().body().path("text");
-        Assert.assertEquals(actualTweet,tweet,"Tweet don't match");
-    }
-
-
-    @Test//create tweet-2 passed
-    public void testUserCanTweetSuccessfully2() {
-        // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our First Tweet"+ UUID.randomUUID().toString();
+        String tweet = "BOOTCAMP tweeting starts NOW!!";
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
         System.out.println(response.extract().body().asPrettyString());
-        // Verify that the tweet is successful
         response.statusCode(200);
-        // Verity tweet value
-        String actualTweet=response.extract().body().path("text");
-        Long id= response.extract().body().path("id");
-        System.out.println(id);
-        Assert.assertNotEquals("id","text");
-    }
-    @Test//create tweet-3 passed
-    public void testUserCanTweet() {
-        // User sent a tweet
-        String tweet = "Bootcamp project is so stressful "+ UUID.randomUUID().toString();
-        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
-        response.statusCode(200);
-        String actualTweet=response.extract().body().path("text");
-        Assert.assertEquals(actualTweet,tweet,"Tweet don't match");
-    }
-    @Test//test-4-failed
-    public void testUserCanDeleteTweet(){
-        String tweet="Bootcamp project is so stressful d933fd25-e040-4b3c-a285-d07d7b05b78c";
-        ValidatableResponse deleteResponse1=this.tweetAPIClient.deleteTweet(1378047777687678985l);
-        deleteResponse1.statusCode(200);
-        String actualTweet=deleteResponse1.extract().body().path("text");
-        Assert.assertEquals(tweet,actualTweet);
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, tweet, "Tweet don't match");
     }
 
-
-    @Test //5-passed
+    @Test //2
     public void testUserCanNotTweetTheSameTweetTwiceInARow() {
-        // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our Tweet is same tweet";
+        String tweet = "BOOTCAMP tweeting starts NOW!!";
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
-        // Verify that the tweet is successful
-        //response.statusCode(403);
-        // Verity Retweet
         System.out.println(response.extract().body().asPrettyString());
-        String expectedMessage="Status is a duplicate.";
-        String actualTweet=response.extract().body().path("errors[0].message");
-        Assert.assertEquals(actualTweet,expectedMessage,"Tweet match");
-        Assert.assertNotEquals("403",200);
+        String expectedMessage = "Status is a duplicate.";
+        String actualTweet = response.extract().body().path("errors[0].message");
+        Assert.assertEquals(actualTweet, expectedMessage, "Tweet match");
+        Assert.assertNotEquals("403", 200);
+    }
+
+    @Test //3
+    public void testUserCanTweetRandomSuccessfully() {
+        String tweet = "I am tweeting my life way" + UUID.randomUUID().toString();
+        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, tweet, "Tweet don't match");
+    }
+
+    @Test //4
+    public void testUserCanDeleteTweet() {
+        String tweet = "I am tweeting my life way05daefcb-8171-442a-89c1-c3081de31aae";
+        ValidatableResponse deleteResponse = this.tweetAPIClient.deleteTweet(1379152553812836352l);
+        deleteResponse.statusCode(200);
+        String actualTweet = deleteResponse.extract().body().path("text");
+        Assert.assertEquals(tweet, actualTweet);
+    }
+
+    @Test //5
+    public void testUserCanRetweet() {
+        String tweet = "RT @IsratReto: BOOTCAMP tweeting starts NOW!!";
+        ValidatableResponse response = this.tweetAPIClient.reTweet(1379151742647042050l, "Israt Reto");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, tweet, "Tweet is not a match");
+    }
+
+    @Test //6
+    public void testUserCannotRetweet(){
+        String errorMessage = "You have already retweeted this Tweet.";
+        ValidatableResponse response = this.tweetAPIClient.reTweet(1379151742647042050l, "Israt Reto");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("errors[0].message");
+        Assert.assertEquals(actualTweet, errorMessage, "Tweet is not a match");
+
+    }
+
+    @Test //7
+    public void testUserCanReTweetAnotherUsersTweet(){
+        String reTweet = "RT @elonmusk: The Earth is not flat, it’s a hollow globe &amp; Donkey King lives there!";
+        ValidatableResponse response = this.tweetAPIClient.reTweet(1379026401341419520l, "Israt Reto");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, reTweet, "Tweet is not a match");
+
+    }  @Test //7
+    public void testUserCanReTweetAnotherUsersTweet1(){
+        String reTweet = "RT @eashaarap: Cant Post Tweet Twice";
+        ValidatableResponse response = this.tweetAPIClient.reTweet(1379139113966825476l, "Israt Reto");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, reTweet, "Tweet is not a match");
+
+    }
+
+    @Test //8
+    public void testUserCanFavoriteATweet() {
+        ValidatableResponse response = this.tweetAPIClient.favoriteTweet(1378881525438148608l);
+        System.out.println(response.extract().body().asPrettyString());
+        boolean actualFavoritedTweet = response.extract().body().path("favorited");
+        Assert.assertTrue(actualFavoritedTweet);
+    }
+
+    @Test //9
+    public void testUserCannotFavoriteAFavoritedTweet() {
+        String errorMessage = "You have already favorited this status.";
+        ValidatableResponse response = this.tweetAPIClient.favoriteTweet(1378886585517805568l);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualErrorMessage = response.extract().body().path("errors[0].message");
+        System.out.println(actualErrorMessage);
+        Assert.assertEquals(actualErrorMessage, errorMessage, "Error message is the same");
+//        Assert.assertEquals(139,139);
+    }
+
+    @Test //10
+    public void testUserUnFavoriteAFavoritedTweet() {
+        ValidatableResponse response = this.tweetAPIClient.unfavoriteTweet(1378881525438148608l);
+        System.out.println(response.extract().body().asPrettyString());
+        boolean actualFavoritedTweet = response.extract().body().path("favorited");
+        Assert.assertFalse(actualFavoritedTweet);
+    }
+
+    @Test //9
+    public void testUserCanGetFavoritesList() {
+        ValidatableResponse response = this.tweetAPIClient.favoritesList("eashaarap");
+        System.out.println(response.extract().body().asPrettyString());
+    }
+
+    @Test
+    public void testUserCanGetFavoritesList1() {
+        ValidatableResponse response = this.tweetAPIClient.favoritesList1(1376273647225167881l);
+        System.out.println(response.extract().body().asPrettyString());
     }
 
 
@@ -104,7 +160,6 @@ public class TweetAPIClientTest {
 //        //String actualTweet = response.extract().body().path("text");
 //        //Assert.assertEquals(actualTweet, tweet, "Tweet is not match");
 //    }
-
 
 
 }
