@@ -16,6 +16,7 @@ public class PostAPIClientTest {
     public void setUpPostsAPI(){
         this.postsAPIClient=new PostsAPIClient();
     }
+
     @Test
     public void testGetAllPosts(){
         ValidatableResponse response=this.postsAPIClient.getAllPosts();
