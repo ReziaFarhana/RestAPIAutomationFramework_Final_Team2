@@ -6,6 +6,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import tweet.TweetAPIClient;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 public class TweetAPIClientTest {
@@ -21,7 +23,7 @@ public class TweetAPIClientTest {
     //create tweet-1 passed
     public void testUserCanTweetSuccessfully1() {
         // User sent a tweet
-        String tweet = "Cant Post Tweet Twice";
+        String tweet = "Twitter API Testing Sucks";
         //we want to hold the tweet in a variable, 'response'
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
         // Verify that the tweet is successful
@@ -90,6 +92,7 @@ public class TweetAPIClientTest {
         String actualTweet = response.extract().body().path("text");
         Assert.assertEquals(actualTweet, retweet);
     }
+
     @Test
     public void testUserCanNotRetweet7() {
         String errormessage = "You have already retweeted this Tweet.";
@@ -110,6 +113,7 @@ public class TweetAPIClientTest {
         String actualTweet = response.extract().body().path("text");
         Assert.assertEquals(actualTweet, retweet);
     }
+
     @Test
     public void testUserCantUnReTweet9() {
         String retweet = "Cant Post Tweet Twice";
@@ -127,6 +131,7 @@ public class TweetAPIClientTest {
         boolean actualFavoritedTweet = response.extract().body().path("favorited");
         Assert.assertTrue(actualFavoritedTweet);
     }
+
     @Test
     public void testUserCannotFavoriteAFavoritedTweet11() {
         String errorMessage = "You have already favorited this status.";
@@ -137,6 +142,7 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualErrorMessage, errorMessage, "Error message is the same");
 //        Assert.assertEquals(139,139);
     }
+
     @Test
     public void testUserUnFavoriteAFavoritedTweet12() {
         ValidatableResponse response = this.tweetAPIClient.unfavoriteTweet(1379151742647042050l);
@@ -146,29 +152,169 @@ public class TweetAPIClientTest {
     }
 
     @Test
-    public void testUserGetStatuses13(){
+    public void testUserGetStatuses13() {
         String expectedTweet = "The Earth is not flat, it’s a hollow globe &amp; Donkey King lives there!";
         ValidatableResponse response = this.tweetAPIClient.getStatuses(1379026401341419520l);
         System.out.println(response.extract().body().asPrettyString());
-        String actualTweet= response.extract().body().path("text");
+        String actualTweet = response.extract().body().path("text");
         Assert.assertEquals(actualTweet, expectedTweet, "Text not match");
 
     }
+
     @Test
-    public void testUserCannotGetsStatuses14(){
+    public void testUserCannotGetsStatuses14() {
         String errorMsg = "No status found with that ID.";
         ValidatableResponse response = this.tweetAPIClient.getStatuses(137902640134141920l);
         System.out.println(response.extract().body().asPrettyString());
-        String actualErrorMsg= response.extract().body().path("errors[0].message");
+        String actualErrorMsg = response.extract().body().path("errors[0].message");
         Assert.assertEquals(actualErrorMsg, errorMsg, "Error not match");
 
     }
 
-    @Test//fail
-    public void testUserCanGetFriends15(){
+    @Test
+    public void testUserCanGetFriends15() {
+        Integer expectedID = 50393960;
         ValidatableResponse response = this.tweetAPIClient.getFriendsId("Israt Reto");
         System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        Integer actualID = response.extract().body().path("ids[1]");
+        Assert.assertEquals(actualID, expectedID, "IDs do not match");
     }
+
+    @Test
+    public void testUserCanCreateList16() {
+        String name = "I created my list again!!!!!";
+        ValidatableResponse response = this.tweetAPIClient.createList(name);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualName = response.extract().body().path("name");
+        Assert.assertEquals(actualName, name, "Not matched");
+    }
+
+    @Test
+    public void testUserCanRetrieveList17() {
+        String name = "I created my list again!!!!!";
+        ValidatableResponse response = this.tweetAPIClient.getList();
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualName = response.extract().body().path("[0].name");
+        Assert.assertEquals(actualName, name, "Not matched");
+    }
+
+    @Test
+    public void testUserCanCreateCollectionListUsingId18() {
+        String name = "My Special Collection!!!!!";
+        Long expectedID = 1376273647225167881l;
+        ValidatableResponse response = this.tweetAPIClient.createCollectionList(name);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        Long actualID = response.extract().body().path("objects.users.1376273647225167881.id");
+        Assert.assertEquals(actualID, expectedID, "Not matched");
+    }
+
+    @Test//failed
+    public void testUserCanAddToCollectionList() {
+        String collectionID = "custom-1379483174556815374";
+        Long expectedID = 1376273647225167881l;
+        ValidatableResponse response = this.tweetAPIClient.addToCollectionList(collectionID, 1379480049418637321l);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+//        Long actualID = response.extract().body().path("user.id");
+//        Assert.assertEquals(actualID, expectedID, "Not matched");
+    }
+
+    @Test//passed
+    public void testUserCannotAddToCollectionListUsingReason19() {
+        ArrayList<String> errorReason = new ArrayList<>();
+        errorReason.add("duplicate");
+        Long expectedID = 1376273647225167881l;
+        ValidatableResponse response = this.tweetAPIClient.addToCollectionList("custom-1379483174556815374", 1379483819007479820l);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        ArrayList<String> actualErrorMsg = response.extract().body().path("response.errors.reason");
+        Assert.assertEquals(actualErrorMsg, errorReason, "Error not match");
+
+    }
+
+    @Test
+    public void verifytestUserCannotAddToCollectionListUsingOP20() {
+        ArrayList<String> errorOP = new ArrayList<>();
+        errorOP.add("add");
+        Long expectedID = 1376273647225167881l;
+        ValidatableResponse response = this.tweetAPIClient.addToCollectionList("custom-1379483174556815374", 1379483819007479820l);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        ArrayList<String> actualErrorMsg = response.extract().body().path("response.errors.change.op");
+        Assert.assertEquals(actualErrorMsg, errorOP, "Error not match");
+
+    }
+
+    @Test
+    public void verifytestUserCannotAddToCollectionListUsingTweetID21() {
+        ArrayList<Long> errorId = new ArrayList<>();
+        errorId.add(1379483819007479820l);
+        Long expectedID = 1376273647225167881l;
+        ValidatableResponse response = this.tweetAPIClient.addToCollectionList("custom-1379483174556815374", 1379483819007479820l);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        ArrayList<Long> actualErrorMsg = response.extract().body().path("response.errors.change.tweet_id");
+        Assert.assertNotEquals(actualErrorMsg, errorId, "Error not match");
+
+    }
+
+    @Test
+    public void verifytestUserCanCreateCollectionListUsingName22() {
+        String name = "My Special Collection!!!!!";
+        String expectedname = "Easha";
+        ValidatableResponse response = this.tweetAPIClient.createCollectionList(name);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualID = response.extract().body().path("objects.users.1376273647225167881.name");
+        Assert.assertEquals(actualID, expectedname, "Not matched");
+    }
+
+    @Test
+    public void verifytestUserCanCreateCollectionListUsingScreenName22() {
+        String name = "My Special Collection!!!!!";
+        String expectedname = "eashaarap";
+        ValidatableResponse response = this.tweetAPIClient.createCollectionList(name);
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualID = response.extract().body().path("objects.users.1376273647225167881.screen_name");
+        Assert.assertEquals(actualID, expectedname, "Not matched");
+    }
+
+    @Test
+    public void testUserCannotGetsStatusesUsingCode23() {
+        int errorCode = 144;
+        ValidatableResponse response = this.tweetAPIClient.getStatuses(137902640134141920l);
+        System.out.println(response.extract().body().asPrettyString());
+        int actualErrorMsg = response.extract().body().path("errors[0].code");
+        Assert.assertEquals(actualErrorMsg, errorCode, "Error not match");
+
+    }
+    @Test
+    public void testUserCanDestroyCollection24(){
+        ValidatableResponse response = this.tweetAPIClient.destroyCollectionList("custom-1379525033622700033");
+        System.out.println(response.extract().body().asPrettyString());
+        boolean actualFavoritedTweet = response.extract().body().path("destroyed");
+        Assert.assertTrue(actualFavoritedTweet);
+    }
+    @Test
+    public void testUserCanNotTweetTheSameTweetTwiceInArowUsingCode25() {
+        // User sent a tweet
+        String tweet = "My first testcase in api6";
+        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
+        System.out.println(response.extract().body().asPrettyString());
+        Integer expectedMessage = 187;
+        Integer actualTweet = response.extract().body().path("errors[0].code");
+        Assert.assertEquals(actualTweet, expectedMessage, "Tweet match");
+        Assert.assertNotEquals("403", 200);
+    }
+
+
+
+
 
 //    @Test
 //    public void testUserGetStatuses13111(){
@@ -179,17 +325,6 @@ public class TweetAPIClientTest {
 //        Assert.assertEquals(actualTweet, expectedTweet, "Text not match");
 //
 //    }
-
-
-
-
-
-
-
-
-
-
-
 
 
 //    @Test(enabled = false)
@@ -217,6 +352,7 @@ public class TweetAPIClientTest {
 //        //String actualTweet = response.extract().body().path("text");
 //        //Assert.assertEquals(actualTweet, tweet, "Tweet is not match");
 //    }
+
 
 
 }

@@ -23,7 +23,12 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_UNFAVORITE_ENDPOINT = "/favorites/destroy.json";
     private final String POST_UNTWEET_RETWEET = "/statuses/unretweet.json";
     private final String GET_STATUSES = "/statuses/show.json";
-    private final String GET_FRIENDS = "friends/ids.json?screen_name=IsratReto";
+    private final String GET_FRIENDS = "/friends/ids.json?screen_name=IsratReto";
+    private final String POST_CREATE_LIST = "/lists/create.json";
+    private final String GET_LIST = "/lists/list.json";
+    private final String POST_CREATE_COLLECTION_LIST = "/collections/create.json";
+    private final String POST_ADD_TO_COLLECTION = "/collections/entries/add.json";
+    private final String POST_DESTROY_COLLECTION = "/collections/destroy.json";
 
 
 
@@ -121,6 +126,7 @@ public class TweetAPIClient extends RestAPI {
                 .when().get(this.baseUrl + this.GET_STATUSES)
                 .then();
     }
+    //get all ids of other user tweets
     public ValidatableResponse getFriendsId(String screenName){
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
                 .param("screen_name", screenName)
@@ -128,9 +134,43 @@ public class TweetAPIClient extends RestAPI {
                 .then();
     }
 
+    //create list using post
+    public ValidatableResponse createList(String name){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name", name)
+                .when().post(this.baseUrl + this.POST_CREATE_LIST)
+                .then();
+    }
+    //get list using get
+    public ValidatableResponse getList(){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .when().get(this.baseUrl + this.GET_LIST)
+                .then();
+    }
+    //create collection list
+    public ValidatableResponse createCollectionList(String name){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name", name)
+                .when().post(this.baseUrl + this.POST_CREATE_COLLECTION_LIST)
+                .then();
+    }
+//add tweet to collection
+    public ValidatableResponse addToCollectionList( String collectionID, Long tweetID){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+//                .param("name", name)
+                .param("id", collectionID)
+                .param("tweet_id", tweetID)
+                .when().post(this.baseUrl + this.POST_ADD_TO_COLLECTION)
+                .then();
+    }
 
-
-
+    //destroy collection list
+    public ValidatableResponse destroyCollectionList(String customID){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("id", customID)
+                .when().post(this.baseUrl + this.POST_DESTROY_COLLECTION)
+                .then();
+    }
 
 
 
