@@ -1,11 +1,16 @@
 package tweettest;
 
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import tweet.TweetAPIClient;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class TweetAPIClientTest {
@@ -68,7 +73,7 @@ public class TweetAPIClientTest {
     }
 
     @Test //6
-    public void testUserCannotRetweet(){
+    public void testUserCannotRetweet() {
         String errorMessage = "You have already retweeted this Tweet.";
         ValidatableResponse response = this.tweetAPIClient.reTweet(1379151742647042050l, "Israt Reto");
         System.out.println(response.extract().body().asPrettyString());
@@ -78,15 +83,17 @@ public class TweetAPIClientTest {
     }
 
     @Test //7
-    public void testUserCanReTweetAnotherUsersTweet(){
+    public void testUserCanReTweetAnotherUsersTweet() {
         String reTweet = "RT @elonmusk: The Earth is not flat, it’s a hollow globe &amp; Donkey King lives there!";
         ValidatableResponse response = this.tweetAPIClient.reTweet(1379026401341419520l, "Israt Reto");
         System.out.println(response.extract().body().asPrettyString());
         String actualTweet = response.extract().body().path("text");
         Assert.assertEquals(actualTweet, reTweet, "Tweet is not a match");
 
-    }  @Test //7
-    public void testUserCanReTweetAnotherUsersTweet1(){
+    }
+
+    @Test //7
+    public void testUserCanReTweetAnotherUsersTweet1() {
         String reTweet = "RT @eashaarap: Cant Post Tweet Twice";
         ValidatableResponse response = this.tweetAPIClient.reTweet(1379139113966825476l, "Israt Reto");
         System.out.println(response.extract().body().asPrettyString());
@@ -122,44 +129,154 @@ public class TweetAPIClientTest {
         Assert.assertFalse(actualFavoritedTweet);
     }
 
-    @Test //9
+    @Test //11
+    public void testUserUnReTweetAReTweet(){
+        String unReTweet = "BOOTCAMP tweeting starts NOW!!";
+        ValidatableResponse response = this.tweetAPIClient.unReTweet(1379151742647042050l);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, unReTweet);
+    }
+
+    @Test //12
+    public void testUserCanRetrieveASingleTweet(){
+        String tweet = "I am tweeting my life way37246cc8-453e-48ad-bd05-4dded1ff16b1";
+        ValidatableResponse response = this.tweetAPIClient.showSingleTweet(1379152479183601664l);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, tweet);
+    }
+
+    @Test //13
     public void testUserCanGetFavoritesList() {
-        ValidatableResponse response = this.tweetAPIClient.favoritesList("eashaarap");
+        List<Integer> expectedFavoriteCount = Arrays.asList(1,1,1,1,1);
+        Response response = this.tweetAPIClient.favoritesList("Easha Khanam");
+        //System.out.println(response.body().asPrettyString());
+        List<String> actualFavoriteCount = response.jsonPath().getList("favorite_count");
+        Assert.assertEquals(actualFavoriteCount,expectedFavoriteCount);
+    }
+
+    @Test //14
+    public void testUserCanRetrieveRecentReTweets(){
+        List<Integer> expectedCount = Arrays.asList(2,2);
+        Response response = this.tweetAPIClient.collectionOfRecentReTweets(1379105722546462720l);
+        System.out.println(response.body().asPrettyString());
+        List<String> actualCount = response.jsonPath().getList("retweet_count");
+        Assert.assertEquals(actualCount,expectedCount);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        @Test //14
+//    public void testGetUserTimeTweet() {
+//        //List<Integer> expectedStatusCount = "16";
+//        Response response = this.tweetAPIClient.getUserTimeTweet1();
+//        System.out.println(response.body().asPrettyString());
+//        String actualStatusCount = response.body().path("statuses_count");
+////        Assert.assertEquals(actualStatusCount,expectedStatusCount);
+//    }
+
+
+
+
+//    @Test //13
+//    public void testUserCanRetrieveATweetsInBulk(){
+////        String tweet = "I am tweeting my life way37246cc8-453e-48ad-bd05-4dded1ff16b1";
+//        ValidatableResponse response = this.tweetAPIClient.showTweetsInBulk(1379151742647042050l,1379152479183601664l);
+//        System.out.println(response.extract().body().asPrettyString());
+////        String actualTweet = response.extract().body().path("text");
+////        Assert.assertEquals(actualTweet, tweet);
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @Test //10
+//    public void testGetUserTimeTweet() {
+//        String expectedStatusCount = "16";
+//        ValidatableResponse response = this.tweetAPIClient.getUserTimeTweet();
+//        System.out.println(response.extract().body().asPrettyString());
+//        String actualStatusCount = response.extract().body().path("statuses_count");
+//        Assert.assertEquals(actualStatusCount,expectedStatusCount);
+//    }
+//    @Test //10
+//    public void testGetUserTimeTweet() {
+//        Integer expectedFriendsCount = 11;
+//        ValidatableResponse response = this.tweetAPIClient.getUserTimeTweet();
+//        System.out.println(response.extract().body().asPrettyString());
+//        ArrayList<Integer> actualFriendsCount = response.extract().body().path("statuses_count");
+//        System.out.println(actualFriendsCount);
+//        //Assert.assertEquals(actualFriendsCount,expectedFriendsCount);
+//    }
+
+    @Test
+    public void testResponseTime() {
+        Integer expectedResponeTime = 2553;
+        ValidatableResponse response = this.tweetAPIClient.responseTime();
         System.out.println(response.extract().body().asPrettyString());
     }
 
     @Test
-    public void testUserCanGetFavoritesList1() {
-        ValidatableResponse response = this.tweetAPIClient.favoritesList1(1376273647225167881l);
-        System.out.println(response.extract().body().asPrettyString());
+    public void testHeaderValue() {
+        this.tweetAPIClient.headerValue();
     }
-
-
-//    @Test(enabled = false)
-//    public void testResponseTime() {
-//        ValidatableResponse response = this.tweetAPIClient.responseTime();
-//    }
-//    @Test(enabled = false)
-//    public void testHeaderValue() {
-//        this.tweetAPIClient.headerValue();
-//    }
-//
-//    @Test(enabled = false)
-//    public void testPropertyFromResponse() {
-//        //1. User send a tweet
-//        String tweet = "We are learning Rest API Automation with restApiAutomation_Final_Farhana" + UUID.randomUUID().toString();
-//        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
-//        //2. Verify that the tweet was successful
-//        // response.statusCode(200);
-//
-//        //this.tweetAPIClient.checkProperty();
-//        //JsonPath pathEvaluator=response.;
-//        //System.out.println(response.extract().body().asPrettyString());
-//        System.out.println(response.extract().body().asPrettyString().contains("id"));
-//
-//        //String actualTweet = response.extract().body().path("text");
-//        //Assert.assertEquals(actualTweet, tweet, "Tweet is not match");
-//    }
 
 
 }

@@ -5,6 +5,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
@@ -18,12 +19,22 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_FAVORITES_ENDPOINT = "/favorites/create.json";
     private final String POST_UNFAVORITE_ENDPOINT = "/favorites/destroy.json";
     private final String GET_FAVORITE_LIST_ENDPOINT = "/favorites/list.json";
+    private final String CREATE_UNRETWEET_ENDPOINT = "/statuses/unretweet.json";
+    private final String GET_STATUS_ENDPOINT = "/statuses/show.json";
+    private final String GET_STATUS_LOOKUP_ENDPOINT = "/statuses/lookup.json";
+    private final String GET_STATUS_RETWEET_ENDPOINT = "/statuses/retweets.json";
 
 
     // GET all Tweet Information
     public ValidatableResponse getUserTimeTweet() {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
                 .when().get(this.baseUrl + this.GET_USER_TWEET_ENDPOINT).then().statusCode(200);
+    }
+
+    // GET all Tweet Information
+    public Response getUserTimeTweet1() {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .when().get(this.baseUrl + this.GET_USER_TWEET_ENDPOINT).thenReturn();
     }
 
     // Create a Tweet from user twitter
@@ -65,19 +76,42 @@ public class TweetAPIClient extends RestAPI {
                 .then();
     }
 
+    //Unretweeting a reTweet
+    public ValidatableResponse unReTweet(Long tweetID) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("id", tweetID)
+                .when().post(this.baseUrl + this.CREATE_UNRETWEET_ENDPOINT)
+                .then();
+    }
+
     //Get list of favorites
-    public ValidatableResponse favoritesList(String screenName) {
+    public Response favoritesList(String screenName) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
-                .param("screen_name", screenName)
-                .when().get(this.baseUrl + this.GET_FAVORITE_LIST_ENDPOINT)
+                .param("name", screenName).when().get(this.baseUrl+this.GET_FAVORITE_LIST_ENDPOINT).thenReturn();
+    }
+
+//Show single tweet
+    public ValidatableResponse showSingleTweet(Long tweetID){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("id", tweetID)
+                .when().get(this.baseUrl + this.GET_STATUS_ENDPOINT)
                 .then();
     }
 
-    public ValidatableResponse favoritesList1(Long id) {
+//    //Multiple tweets lookup
+//    public ValidatableResponse showTweetsInBulk( Long id,Long tweetID){
+//        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+//        .param("id",id) .param("id", tweetID)
+//                .when().get(this.baseUrl + this.GET_STATUS_LOOKUP_ENDPOINT)
+//                .then();
+//    }
+
+
+    //Collection of most recent retweets
+    public Response collectionOfRecentReTweets(Long tweetID){
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
-                .param("id", id)
-                .when().get(this.baseUrl + this.GET_FAVORITE_LIST_ENDPOINT)
-                .then();
+                .param("id",tweetID)
+                .when().get(this.baseUrl + this.GET_STATUS_RETWEET_ENDPOINT).thenReturn();
     }
 
 
@@ -112,6 +146,44 @@ public class TweetAPIClient extends RestAPI {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    public ValidatableResponse favoritesList1(ArrayList<String> screenName) {
+//        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+//                .param("screen_name", screenName)
+//                .when().get(this.baseUrl + this.GET_FAVORITE_LIST_ENDPOINT)
+//                .then();
+//    }
+//
+//    public ValidatableResponse favoritesList1(Long id) {
+//        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+//                .param("id", id)
+//                .when().get(this.baseUrl + this.GET_FAVORITE_LIST_ENDPOINT)
+//                .then();
+//    }
 
 
     // Response Time check
@@ -130,7 +202,6 @@ public class TweetAPIClient extends RestAPI {
         System.out.println(given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
                 .when().get(this.baseUrl + this.GET_USER_TWEET_ENDPOINT)
                 .then().extract().headers());
-
     }
 
     public void checkProperty() {
