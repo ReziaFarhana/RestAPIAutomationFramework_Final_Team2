@@ -33,7 +33,7 @@ public class TweetAPIClient extends RestAPI {
     public ValidatableResponse deleteTweet(Long tweetId){
         return given().auth().oauth(this.apiKey,this.apiSecretKey,this.accessToken,this.accessTokenSecret)
                 .queryParam("id",tweetId)
-                .when().delete(this.baseUrl+this.DELETE_TWEET_ENDPOINT).then().statusCode(200);
+                .when().post(this.baseUrl+this.DELETE_TWEET_ENDPOINT).then().statusCode(200);
     }
 
 

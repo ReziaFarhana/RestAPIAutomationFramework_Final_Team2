@@ -16,21 +16,21 @@ public class PostAPIClientTest {
     public void setUpPostsAPI(){
         this.postsAPIClient=new PostsAPIClient();
     }
-    @Test
+    @Test//passed-1
     public void testGetAllPosts(){
         ValidatableResponse response=this.postsAPIClient.getAllPosts();
         response.statusCode(HttpStatus.SC_OK);
     }
 
     // write a test that creates a post
-    @Test
+    @Test//passed-2
     public void testUserCanCreateAPostUsingPojoSuccessfully() {
         PostPojo obj = new PostPojo(11, 101, "test title", "test body");
         ValidatableResponse response = this.postsAPIClient.createPost(obj);
         response.statusCode(HttpStatus.SC_CREATED);
     }
 
-    @Test
+    @Test//passed-3
     public void testUserCanCreateAPostSuccessfully() {
         int userId = 11;
         String title = "test title";
