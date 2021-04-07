@@ -9,12 +9,8 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-<!--        <module>Generic</module>-->
-<!--        <module>Twitter</module>-->
-<!--        <module>TypiCode</module>-->
         <module>Generic</module>
         <module>Twitter</module>
-        <module>TypiCode</module>
     </modules>
 
     <properties>
@@ -146,14 +142,10 @@
                     <testFailureIgnore>true</testFailureIgnore>
                     <!--Test Runner Files-->
                     <includes>
-                        <include>**/TweetAPIClientTest.java</include>
-                        <include>**/PostAPIClientTest.java</include>
+                        <include>**/TestingTwitterEndPoints.java</include>
                     </includes>
                     <suiteXmlFiles>
-                        <!--                        <suiteXmlFile>target/test-classes/AmazonTestRunner.xml</suiteXmlFile>-->
-                        <!--                        <suiteXmlFile>target/test-classes/CNNTestRunner.xml</suiteXmlFile>-->
-                        <!--                        <suiteXmlFile>target/test-classes/CignaTestRunner.xml</suiteXmlFile>-->
-
+                        <!--   <suiteXmlFile>target/test-classes/AmazonTestRunner.xml</suiteXmlFile>-->
                     </suiteXmlFiles>
 
 

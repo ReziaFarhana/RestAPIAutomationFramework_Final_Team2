@@ -25,10 +25,10 @@ public class RestAPI {
             // Path of the Secret.properties file
             this.inputStream = new FileInputStream("../Twitter/secret.properties");
             this.properties.load(this.inputStream);
-            this.apiKey = this.properties.getProperty("apiKey");
-            this.apiSecretKey = this.properties.getProperty("apiSecretKey");
-            this.accessToken = this.properties.getProperty("accessToken");
-            this.accessTokenSecret = this.properties.getProperty("accessTokenSecret");
+            this.apiKey =           this.properties.getProperty("apiKey");
+            this.apiSecretKey =     this.properties.getProperty("apiSecretKey");
+            this.accessToken =      this.properties.getProperty("accessToken");
+            this.accessTokenSecret =this.properties.getProperty("accessTokenSecret");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("File not load Properly");
