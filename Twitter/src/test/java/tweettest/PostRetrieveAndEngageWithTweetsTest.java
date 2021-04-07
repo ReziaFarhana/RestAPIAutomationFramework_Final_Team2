@@ -5,21 +5,19 @@ import io.restassured.response.ValidatableResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import tweet.TweetAPIClient;
+import tweet.PostRetrieveAndEngageWithTweets;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class TweetAPIClientTest {
+public class PostRetrieveAndEngageWithTweetsTest {
 
-    private TweetAPIClient tweetAPIClient;
+    private PostRetrieveAndEngageWithTweets tweetAPIClient;
 
     @BeforeClass
     public void setUpTweetAPI() {
-        this.tweetAPIClient = new TweetAPIClient();
+        this.tweetAPIClient = new PostRetrieveAndEngageWithTweets();
     }
 
 
@@ -158,13 +156,59 @@ public class TweetAPIClientTest {
 
     @Test //14
     public void testUserCanRetrieveRecentReTweets(){
-        List<Integer> expectedCount = Arrays.asList(2,2);
-        Response response = this.tweetAPIClient.collectionOfRecentReTweets(1379105722546462720l);
-        System.out.println(response.body().asPrettyString());
+        List<Integer> expectedCount = Arrays.asList(3,3,3);
+        Response response = this.tweetAPIClient.collectionOfRecentReTweets(1379104603040534533l);
+        //System.out.println(response.body().asPrettyString());
         List<String> actualCount = response.jsonPath().getList("retweet_count");
+        //System.out.println(actualCount);
         Assert.assertEquals(actualCount,expectedCount);
     }
 
+    @Test //15
+    public void testUserCanRetrieveTweetsReTweetedByOthers(){
+        List<Boolean> reTweetedStatus = Arrays.asList(false,false,false,true,true,false);
+        Response response = this.tweetAPIClient.reTweetsOfMe("Israt Reto");
+        System.out.println(response.body().asPrettyString());
+        List<Boolean> actualRetweetedStatus = response.jsonPath().getList("retweeted");
+        System.out.println(actualRetweetedStatus);
+        Assert.assertEquals(actualRetweetedStatus,reTweetedStatus);
+    }
+
+    @Test //16
+    public void testUserCanRetrieveUsersWhoRetweetedTheTweet(){
+        List<Long> expectedUserIds = Arrays.asList(1376052489028521991L,
+                1376273647225167881L,
+                1376012108211613700L);
+        ValidatableResponse response = this.tweetAPIClient.retrieveReTweeters(1379104603040534533L);
+        //System.out.println(response.extract().body().asPrettyString());
+        List<Long> actualUserIds = response.extract().body().jsonPath().getList("ids");
+        Assert.assertEquals(actualUserIds,expectedUserIds, "List contains wrong ids");
+    }
+
+    @Test //17
+    public void testUserCanRetrieveRelevenTweets(){
+        Long tweetID = 1379463921577324546L;
+        ValidatableResponse response = this.tweetAPIClient.retrieveReleventTweets("Sheikh Hasina","popular");
+        //System.out.println(response.extract().body().asPrettyString());
+        Long actualTweetID = response.extract().body().path("statuses[1].id");
+        Assert.assertEquals(actualTweetID,tweetID,"Tweet does not exist");
+    }
+
+
+
+//    @Test //13
+//    public void testUserCanRetrieveATweetsInBulk(){
+//        List<Long> listOfTweets = new ArrayList<Long>();
+//        listOfTweets.add(1379105722546462720L);
+//        listOfTweets.add(1379104603040534533L);
+//        System.out.println(listOfTweets);
+//
+////        String tweet = "I am tweeting my life way37246cc8-453e-48ad-bd05-4dded1ff16b1";
+//        Response response = this.tweetAPIClient.showTweetsInBulk("Israt Reto",listOfTweets.subList(0,1));
+//        System.out.println(response.body().asPrettyString());
+////        String actualTweet = response.extract().body().path("text");
+////        Assert.assertEquals(actualTweet, tweet);
+//    }
 
 
 
@@ -185,23 +229,22 @@ public class TweetAPIClientTest {
 //        @Test //14
 //    public void testGetUserTimeTweet() {
 //        //List<Integer> expectedStatusCount = "16";
-//        Response response = this.tweetAPIClient.getUserTimeTweet1();
-//        System.out.println(response.body().asPrettyString());
-//        String actualStatusCount = response.body().path("statuses_count");
+//        ValidatableResponse response = this.tweetAPIClient.getUserTimeTweet();
+//        System.out.println(response.extract().body().asPrettyString());
+//        List<Integer> actualStatusCount = response.extract().body().jsonPath().getList("statuses_count");
+//            System.out.println(actualStatusCount);
 ////        Assert.assertEquals(actualStatusCount,expectedStatusCount);
 //    }
 
+//    List<Integer> expectedCount = Arrays.asList(2,2);
+//    Response response = this.tweetAPIClient.collectionOfRecentReTweets(1379105722546462720l);
+//        System.out.println(response.body().asPrettyString());
+//    List<String> actualCount = response.jsonPath().getList("retweet_count");
+//        System.out.println(actualCount);
+//        Assert.assertEquals(actualCount,expectedCount);
 
 
 
-//    @Test //13
-//    public void testUserCanRetrieveATweetsInBulk(){
-////        String tweet = "I am tweeting my life way37246cc8-453e-48ad-bd05-4dded1ff16b1";
-//        ValidatableResponse response = this.tweetAPIClient.showTweetsInBulk(1379151742647042050l,1379152479183601664l);
-//        System.out.println(response.extract().body().asPrettyString());
-////        String actualTweet = response.extract().body().path("text");
-////        Assert.assertEquals(actualTweet, tweet);
-//    }
 
 
 

@@ -6,11 +6,12 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
 
-public class TweetAPIClient extends RestAPI {
+public class PostRetrieveAndEngageWithTweets extends RestAPI {
 
     private final String CREATE_TWEET_ENDPOINT = "/statuses/update.json";
     private final String DELETE_TWEET_ENDPOINT = "/statuses/destroy.json";
@@ -23,6 +24,9 @@ public class TweetAPIClient extends RestAPI {
     private final String GET_STATUS_ENDPOINT = "/statuses/show.json";
     private final String GET_STATUS_LOOKUP_ENDPOINT = "/statuses/lookup.json";
     private final String GET_STATUS_RETWEET_ENDPOINT = "/statuses/retweets.json";
+    private final String GET_STATUS_RETWEETS_OF_ME_ENDPOINT = "/statuses/retweets_of_me.json";
+    private final String GET_STATUS_RETWEETERS_ENDPOINT = "/statuses/retweeters/ids.json";
+    private final String GET_SEARCH_TWEETS_ENDPOINT = "/search/tweets.json";
 
 
     // GET all Tweet Information
@@ -98,7 +102,7 @@ public class TweetAPIClient extends RestAPI {
                 .then();
     }
 
-//    //Multiple tweets lookup
+    //Multiple tweets lookup
 //    public ValidatableResponse showTweetsInBulk( Long id,Long tweetID){
 //        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
 //        .param("id",id) .param("id", tweetID)
@@ -106,6 +110,13 @@ public class TweetAPIClient extends RestAPI {
 //                .then();
 //    }
 
+    //Multiple tweets lookup
+    public Response showTweetsInBulk(String name, List<Long> tweetID){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name",name).param("id",tweetID)
+                .when().get(this.baseUrl + this.GET_STATUS_LOOKUP_ENDPOINT)
+                .thenReturn();
+    }
 
     //Collection of most recent retweets
     public Response collectionOfRecentReTweets(Long tweetID){
@@ -113,6 +124,29 @@ public class TweetAPIClient extends RestAPI {
                 .param("id",tweetID)
                 .when().get(this.baseUrl + this.GET_STATUS_RETWEET_ENDPOINT).thenReturn();
     }
+
+    //Recent tweets that have been retweeted by others
+    public Response reTweetsOfMe(String name){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name",name)
+                .when().get(this.baseUrl + this.GET_STATUS_RETWEETS_OF_ME_ENDPOINT).thenReturn();
+    }
+
+    //Get user IDs belonging to user who retweeted the tweet
+    public ValidatableResponse retrieveReTweeters(Long tweetID){
+       return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("id",tweetID)
+                .when().get(this.baseUrl + this.GET_STATUS_RETWEETERS_ENDPOINT).then();
+    }
+
+    public ValidatableResponse retrieveReleventTweets(String q, String resultType){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("q",q).param("result_type",resultType)
+                .when().get(this.baseUrl + this.GET_SEARCH_TWEETS_ENDPOINT).then();
+    }
+
+
+
 
 
 
