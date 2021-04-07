@@ -31,6 +31,16 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_DESTROY_COLLECTION = "/collections/destroy.json";
     private final String GET_ACCOUNT_SETTINGS = "/account/settings.json";
     private final String GET_FRIENDS_LIST = "/friends/list.json";
+    private final String POST_BLOCK_USERS = "/blocks/create.json";
+    private final String GET_BLOCK_USERS_LIST = "/blocks/list.json";
+    private final String apiversion2="2";
+    private final String baseUrl2 = "https://api.twitter.com/"+this.apiversion2;
+    private final String GET_MENTION_USER = "/users/id/mentions";
+    private final String POST_IMAGE = "/account/update_profile_image.json?image=mypic.jpg";
+    private final String POST_CUSTOM_PROFILE = "/custom_profiles/new.json";
+    private final String POST_FOLLOW_USER = "/friendships/create.json";
+    private final String POST_DIRECT_MESSAGE = "/direct_messages/events/new.json";
+
 
 
 
@@ -45,6 +55,13 @@ public class TweetAPIClient extends RestAPI {
     // Create a Tweet from user twitter
     public ValidatableResponse createTweet(String tweet){
         return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken,this.accessTokenSecret)
+                .param("status",tweet)
+                .when().post(this.baseUrl+this.CREATE_TWEET_ENDPOINT)
+                .then();
+    }
+    public ValidatableResponse createTweetUsingUsername(Long username,String tweet){
+        return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken,this.accessTokenSecret)
+                .param("in_reply_to_status_id",username)
                 .param("status",tweet)
                 .when().post(this.baseUrl+this.CREATE_TWEET_ENDPOINT)
                 .then();
@@ -187,7 +204,67 @@ public class TweetAPIClient extends RestAPI {
                 .when().get(this.baseUrl + this.GET_FRIENDS_LIST)
                 .then();
     }
+    public ValidatableResponse postCustomProfile(String name){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name", name)
+                .param("avatar.media.id")
+                .when().post(this.baseUrl + this.POST_CUSTOM_PROFILE)
+                .then();
+    }
+    public ValidatableResponse postFollowUser(String name,String screenName){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name", name)
+                .param("screen_name",screenName)
+                .when().post(this.baseUrl + this.POST_FOLLOW_USER)
+                .then();
+    }
+    public ValidatableResponse postBlockUsers(String name,String screenName){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name", name)
+                .param("screen_name",screenName)
+                .when().post(this.baseUrl + this.POST_BLOCK_USERS)
+                .then();
+    }
+    public ValidatableResponse getBlockUsersList(boolean skipStatus){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("skip_status", skipStatus)
+                .when().get(this.baseUrl + this.GET_BLOCK_USERS_LIST)
+                .then();
+    }
+    public ValidatableResponse postDirectMessages(){
+        return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("message_create")
+                .param("message_create.target.recipient_id", 1376012108211613700l)
+                .param("message_create.message_data.text", "Yo yo")
+                .when().post(this.baseUrl+this.POST_DIRECT_MESSAGE)
+                .then();
+    }
 
+
+
+
+
+
+
+
+
+    //mention user
+    public ValidatableResponse mentionUser(Long id){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+//                .queryParam("tweet.fields", text)
+                .queryParam("id",id)
+                .when().get(baseUrl2+ this.GET_MENTION_USER)
+                .then();
+    }
+//upload image
+    public ValidatableResponse uploadImage(String image, String name){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+//                .queryParam("tweet.fields", text)
+                .param("image",image)
+                .param("name",name)
+                .when().post(this.baseUrl+ this.POST_IMAGE)
+                .then();
+    }
 
 
 

@@ -6,9 +6,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import tweet.TweetAPIClient;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class TweetAPIClientTest {
 
@@ -367,6 +365,107 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualUrl, url, "url doesnt match");
     }
 
+    @Test
+    public void testUserCanGetTweetResponseTime32(){
+        ValidatableResponse response = this.tweetAPIClient.responseTime();
+        System.out.println(response.extract().body().asPrettyString());
+        String actualResponseTime = response.extract().body().path("[0]");
+        Assert.assertTrue(Boolean.parseBoolean(actualResponseTime));
+    }
+
+    @Test
+    public void testUserCannotCreateCustomProfile33(){
+        String errorMsg = "Client is not permitted to perform this action.";
+        ValidatableResponse response = this.tweetAPIClient.postCustomProfile("Test Me");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualErrorMsg = response.extract().body().path("errors[0].message");
+        Assert.assertEquals(actualErrorMsg,errorMsg,"Error message doesnt match");
+    }
+    @Test //follow POTUS
+    public void testUserCanFollowByID34(){
+        Long expectedId = 1349149096909668363l;
+        ValidatableResponse response = this.tweetAPIClient.postFollowUser("President Biden","POTUS");
+        System.out.println(response.extract().body().asPrettyString());
+        Long actualId= response.extract().body().path("id");
+        Assert.assertEquals(actualId,expectedId,"IDs dont match sister");
+
+    }
+    @Test // follow bbcworld
+    public void testUserCanFollowByScreenName35(){
+        String expectedScreenName = "BBCWorld";
+        ValidatableResponse response = this.tweetAPIClient.postFollowUser("BBC News (World)","BBCWorld");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualScreenName= response.extract().body().path("screen_name");
+        Assert.assertEquals(actualScreenName,expectedScreenName,"Screen Names dont match sister");
+
+    }
+    @Test//follow mufti menk
+    public void testUserCanFollowByName36(){
+        String expectedName = "Mufti Menk";
+        ValidatableResponse response = this.tweetAPIClient.postFollowUser("Mufti Menk","muftimenk");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualName= response.extract().body().path("name");
+        Assert.assertEquals(actualName,expectedName,"Names dont match sister");
+
+    }
+    @Test//block POTUS
+    public void testUserCanBlockByName37(){
+        String expectedName = "President Biden";
+        ValidatableResponse response = this.tweetAPIClient.postBlockUsers("President Biden","POTUS");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualName= response.extract().body().path("name");
+        Assert.assertEquals(actualName,expectedName,"Names dont match sister");
+
+    }
+    @Test //block kim kardashian
+    public void testUserCanBlockByScreenName38(){
+        String expectedScreenName = "KimKardashian";
+        ValidatableResponse response = this.tweetAPIClient.postBlockUsers("Kim Kardashian West","KimKardashian");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualScreenName= response.extract().body().path("screen_name");
+        Assert.assertEquals(actualScreenName,expectedScreenName,"Screen names dont match sister");
+
+    }
+    @Test
+    public void testUserCanGetListOfBlockedUsers39(){
+        List<String> blockusers = Arrays.asList("Kim Kardashian West","President Biden");
+        ValidatableResponse response = this.tweetAPIClient.getBlockUsersList(true);
+        System.out.println(response.extract().body().asPrettyString());
+        List<String> actualBlockedUsers = response.extract().body().jsonPath().getList("users.name");
+        Assert.assertEquals(actualBlockedUsers,blockusers,"Try again");
+    }
+
+    @Test // This application is not allowed to access or delete your direct messages. error
+    public void testUserCanTSendDirectMessage40(){
+        int errorCode = 93;
+        ValidatableResponse response = this.tweetAPIClient.postDirectMessages();
+        System.out.println(response.extract().body().asPrettyString());
+        int actualErrorCode = response.extract().body().path("errors[0].code");
+        Assert.assertEquals(actualErrorCode,errorCode,"Code doesnt match buddy");
+    }
+
+
+
+
+
+
+    @Test
+    public void testUserCanUploadImage(){
+        String imagePath = "../Twitter/src/main/java/pics/mypic.jpg";
+        String text = "Mention tweet";
+        ValidatableResponse response = this.tweetAPIClient.uploadImage(imagePath,"Easha Khanam");
+        System.out.println(response.extract().body().asPrettyString());
+    }
+
+
+
+    @Test
+    public void testUserCanMention(){
+        Long id = 1376012108211613700l;
+        String text = "Mention tweet";
+        ValidatableResponse response = this.tweetAPIClient.mentionUser(id);
+        System.out.println(response.extract().body().asPrettyString());
+    }
 
 
 
