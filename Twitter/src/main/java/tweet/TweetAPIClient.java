@@ -29,6 +29,8 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_CREATE_COLLECTION_LIST = "/collections/create.json";
     private final String POST_ADD_TO_COLLECTION = "/collections/entries/add.json";
     private final String POST_DESTROY_COLLECTION = "/collections/destroy.json";
+    private final String GET_ACCOUNT_SETTINGS = "/account/settings.json";
+    private final String GET_FRIENDS_LIST = "/friends/list.json";
 
 
 
@@ -172,8 +174,19 @@ public class TweetAPIClient extends RestAPI {
                 .then();
     }
 
+    //get account settings info
+    public ValidatableResponse getAccountSettings(){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .when().get(this.baseUrl + this.GET_ACCOUNT_SETTINGS)
+                .then();
+    }
 
-
+    //Get friends list
+    public ValidatableResponse getFriendsList(){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .when().get(this.baseUrl + this.GET_FRIENDS_LIST)
+                .then();
+    }
 
 
 

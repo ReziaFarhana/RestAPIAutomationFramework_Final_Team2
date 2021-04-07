@@ -297,8 +297,8 @@ public class TweetAPIClientTest {
     public void testUserCanDestroyCollection24(){
         ValidatableResponse response = this.tweetAPIClient.destroyCollectionList("custom-1379525033622700033");
         System.out.println(response.extract().body().asPrettyString());
-        boolean actualFavoritedTweet = response.extract().body().path("destroyed");
-        Assert.assertTrue(actualFavoritedTweet);
+        boolean actualDestroyed = response.extract().body().path("destroyed");
+        Assert.assertTrue(actualDestroyed);
     }
     @Test
     public void testUserCanNotTweetTheSameTweetTwiceInArowUsingCode25() {
@@ -311,6 +311,63 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualTweet, expectedMessage, "Tweet match");
         Assert.assertNotEquals("403", 200);
     }
+    @Test
+    public void testUserCanGetAccountSettings26(){
+        ValidatableResponse response = this.tweetAPIClient.getAccountSettings();
+        System.out.println(response.extract().body().asPrettyString());
+        boolean actualProtected = response.extract().body().path("protected");
+        Assert.assertFalse(actualProtected);
+    }
+    @Test
+    public void testUserCanGetFriendsListUsingName27(){
+        String name = "Kamala Harris";
+        ValidatableResponse response = this.tweetAPIClient.getFriendsList();
+        System.out.println(response.extract().body().asPrettyString());
+        String actualName = response.extract().body().path("users[0].name");
+        Assert.assertEquals(actualName, name, "Name doesnt match");
+    }
+    @Test
+    public void testUserCanGetFriendsListUsingID27(){
+        Integer ID = 30354991;
+        ValidatableResponse response = this.tweetAPIClient.getFriendsList();
+        System.out.println(response.extract().body().asPrettyString());
+        Integer actualID = response.extract().body().path("users[0].id");
+        Assert.assertEquals(actualID, ID, "ID doesnt match");
+    }
+    @Test
+    public void testUserCanGetFriendsListUsingScreenName28(){
+        String screenName = "KamalaHarris";
+        ValidatableResponse response = this.tweetAPIClient.getFriendsList();
+        System.out.println(response.extract().body().asPrettyString());
+        String actualScreenName = response.extract().body().path("users[0].screen_name");
+        Assert.assertEquals(actualScreenName, screenName, "screen name doesnt match");
+    }
+    @Test
+    public void testUserCanGetFriendsListUsingLocation29(){
+        String location = "Washington, DC";
+        ValidatableResponse response = this.tweetAPIClient.getFriendsList();
+        System.out.println(response.extract().body().asPrettyString());
+        String actualLocation = response.extract().body().path("users[0].location");
+        Assert.assertEquals(actualLocation, location, "location doesnt match");
+    }
+    @Test
+    public void testUserCanGetFriendsListUsingDescription30(){
+        String description = "Fighting for the people. Wife, Momala, Auntie. She/her. Official account is @VP.";
+        ValidatableResponse response = this.tweetAPIClient.getFriendsList();
+        System.out.println(response.extract().body().asPrettyString());
+        String actualDescription = response.extract().body().path("users[0].description");
+        Assert.assertEquals(actualDescription, description, "location doesnt match");
+    }
+    @Test
+    public void testUserCanGetFriendsListUsingURL31(){
+        String url = "https://t.co/uBcfgtTRsi";
+        ValidatableResponse response = this.tweetAPIClient.getFriendsList();
+        System.out.println(response.extract().body().asPrettyString());
+        String actualUrl = response.extract().body().path("users[0].url");
+        Assert.assertEquals(actualUrl, url, "url doesnt match");
+    }
+
+
 
 
 

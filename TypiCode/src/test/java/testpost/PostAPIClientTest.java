@@ -21,6 +21,7 @@ public class PostAPIClientTest {
     public void testGetAllPosts(){
         ValidatableResponse response=this.postsAPIClient.getAllPosts();
         response.statusCode(HttpStatus.SC_OK);
+        System.out.println(response.extract().body().asPrettyString());
     }
 
     // write a test that creates a post
@@ -29,6 +30,8 @@ public class PostAPIClientTest {
         PostPojo obj = new PostPojo(11, 101, "test title", "test body");
         ValidatableResponse response = this.postsAPIClient.createPost(obj);
         response.statusCode(HttpStatus.SC_CREATED);
+        System.out.println(response.extract().body().asPrettyString());
+
     }
 
     @Test
