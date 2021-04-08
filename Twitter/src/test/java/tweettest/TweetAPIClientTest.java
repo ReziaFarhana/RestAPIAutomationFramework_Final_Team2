@@ -21,12 +21,13 @@ public class TweetAPIClientTest {
     //create tweet-1 passed
     public void testUserCanTweetSuccessfully1() {
         // User sent a tweet
-        String tweet = "Twitter API Testing Sucks";
+        String tweet = "This is soooo much fun....not";
         //we want to hold the tweet in a variable, 'response'
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
         // Verify that the tweet is successful
         response.statusCode(200);
         // Verify tweet value
+        System.out.println(response.extract().body().asPrettyString());
         String actualTweet = response.extract().body().path("text");
         Assert.assertEquals(actualTweet, tweet, "Tweet don't match");
         System.out.println(response.extract().body().asPrettyString());
@@ -396,7 +397,7 @@ public class TweetAPIClientTest {
         ValidatableResponse response = this.tweetAPIClient.postFollowUser("BBC News (World)","BBCWorld");
         System.out.println(response.extract().body().asPrettyString());
         String actualScreenName= response.extract().body().path("screen_name");
-        Assert.assertEquals(actualScreenName,expectedScreenName,"Screen Names dont match sister");
+        Assert.assertEquals(actualScreenName,expectedScreenName,"Screen Names dont match dear");
 
     }
     @Test//follow mufti menk
@@ -442,6 +443,16 @@ public class TweetAPIClientTest {
         System.out.println(response.extract().body().asPrettyString());
         int actualErrorCode = response.extract().body().path("errors[0].code");
         Assert.assertEquals(actualErrorCode,errorCode,"Code doesnt match buddy");
+    }
+
+
+
+
+
+    @Test
+    public void testUserCanCreateWelcomeMsg(){
+        ValidatableResponse response = this.tweetAPIClient.postWelcomeMsg();
+        System.out.println(response.extract().body().asPrettyString());
     }
 
 

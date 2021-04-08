@@ -40,6 +40,7 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_CUSTOM_PROFILE = "/custom_profiles/new.json";
     private final String POST_FOLLOW_USER = "/friendships/create.json";
     private final String POST_DIRECT_MESSAGE = "/direct_messages/events/new.json";
+    private final String POST_WELCOME_MESSAGE = "/direct_messages/welcome_messages/new.json";
 
 
 
@@ -237,6 +238,13 @@ public class TweetAPIClient extends RestAPI {
                 .param("message_create.target.recipient_id", 1376012108211613700l)
                 .param("message_create.message_data.text", "Yo yo")
                 .when().post(this.baseUrl+this.POST_DIRECT_MESSAGE)
+                .then();
+    }
+    public ValidatableResponse postWelcomeMsg(){
+        return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("message_data")
+                .param("name","API IS SO COOL" )
+                .when().post(this.baseUrl+this.POST_WELCOME_MESSAGE)
                 .then();
     }
 
