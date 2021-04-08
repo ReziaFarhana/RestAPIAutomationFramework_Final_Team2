@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class SendingAndReceivingEvents extends RestAPI {
+public class SendingAndReceivingEventsAndCustomProfile extends RestAPI {
     private final String CREATE_DIRECT_MESSAGES_ENDPOINT = "/direct_messages/events/new.json";
     private final String GET_DIRECT_MESSAGES_LIST_ENDPOINT = "/direct_messages/events/list.json";
     private final String DELETE_DIRECT_MESSAGES_ENDPOINT = "/direct_messages/events/destroy.json";
@@ -33,7 +33,6 @@ public class SendingAndReceivingEvents extends RestAPI {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).header("Content-type","application/json").and()
                 .body(body)
                 .when().post(this.baseUrl + this.CREATE_DIRECT_MESSAGES_ENDPOINT).then().extract().response().then();
-
     }
 
     //returns all direct message
@@ -48,4 +47,6 @@ public class SendingAndReceivingEvents extends RestAPI {
                 .param("id",eventID)
                 .when().delete(this.baseUrl + this.DELETE_DIRECT_MESSAGES_ENDPOINT).then();
     }
+
+    //
 }

@@ -16,6 +16,7 @@ public class RestAPI {
     protected String baseUrl;
     protected String apiVersion = "1.1";
     protected String apiVersion2 = "2";
+    protected String uploadImageBaseUrl;
 
     public RestAPI() {
 
@@ -29,6 +30,7 @@ public class RestAPI {
 //            System.out.println("baseURL is wrong");
 //        }
         //https://api.twitter.com/1.1/statuses/update.json
+        this.uploadImageBaseUrl = "https://upload.twitter.com/"+ this.apiVersion;
 
         this.baseUrl = "https://api.twitter.com/" + this.apiVersion;
 

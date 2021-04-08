@@ -1,0 +1,11 @@
+{
+    "media_id": 1380293863336783872,
+    "media_id_string": "1380293863336783872",
+    "size": 31054,
+    "expires_after_secs": 86400,
+    "image": {
+        "image_type": "image/jpeg",
+        "w": 500,
+        "h": 545
+    }
+}

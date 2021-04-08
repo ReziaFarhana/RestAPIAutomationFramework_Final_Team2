@@ -1,7 +1,6 @@
 package directmessagestest;
 
-import directmessages.SendingAndReceivingEvents;
-import io.restassured.response.Response;
+import directmessages.SendingAndReceivingEventsAndCustomProfile;
 import io.restassured.response.ValidatableResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -11,11 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SendingAndReceivingEventsTest {
-    private SendingAndReceivingEvents sendingAndReceivingEvents;
+    private SendingAndReceivingEventsAndCustomProfile sendingAndReceivingEvents;
 
     @BeforeClass
     public void setUpTweetAPI() {
-        this.sendingAndReceivingEvents = new SendingAndReceivingEvents();
+        this.sendingAndReceivingEvents = new SendingAndReceivingEventsAndCustomProfile();
     }
 
     @Test //1
