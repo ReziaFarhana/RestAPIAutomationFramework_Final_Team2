@@ -1,11 +1,14 @@
 package tweet;
 
 import base.RestAPI;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.testng.annotations.Test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +44,10 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_FOLLOW_USER = "/friendships/create.json";
     private final String POST_DIRECT_MESSAGE = "/direct_messages/events/new.json";
     private final String POST_WELCOME_MESSAGE = "/direct_messages/welcome_messages/new.json";
+    private final String welcomeMsgPath = "C:/Users/Easha/IdeaProjects/RestAPIAutomationFramework_Final_Team2" +
+            "/Twitter/jsonFiles/welcomeMessage.json";
+    private final String CREATE_MEDIA_ENDPOINT = "/media/upload.json";
+
 
 
 
@@ -240,13 +247,41 @@ public class TweetAPIClient extends RestAPI {
                 .when().post(this.baseUrl+this.POST_DIRECT_MESSAGE)
                 .then();
     }
-    public ValidatableResponse postWelcomeMsg(){
-        return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken, this.accessTokenSecret)
-                .param("message_data")
-                .param("name","API IS SO COOL" )
-                .when().post(this.baseUrl+this.POST_WELCOME_MESSAGE)
+    public ValidatableResponse createWelcomeMessage( String payload, String image) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .accept(ContentType.JSON)
+                .header("Content-Type", "application/json")
+                .contentType(ContentType.JSON)
+                .body(payload)
+                .when().post(this.baseUrl + this.POST_WELCOME_MESSAGE)
+                .then().log().all();
+    }
+
+
+    public ValidatableResponse messageCreate() throws FileNotFoundException {
+        FileInputStream jsonMessage = new FileInputStream("C:/Users/Easha/IdeaProjects" +
+                "/RestAPIAutomationFramework_Final_Team2/Twitter/jsonFiles/jsonMessage.json");
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .header("Content-Type","application/json")
+                .body(jsonMessage)
+                .when().post(this.baseUrl + this.POST_DIRECT_MESSAGE)
                 .then();
     }
+
+    public ValidatableResponse uploadCutePic(String image) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("media", image)
+                .when().post(this.uploadImageBase + this.CREATE_MEDIA_ENDPOINT)
+                .then();
+    }
+    public ValidatableResponse createTweetWithPicture(String tweet, Long mediaId){
+        return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken,this.accessTokenSecret)
+                .param("status",tweet)
+                .param("media_ids", mediaId)
+                .when().post(this.baseUrl+this.CREATE_TWEET_ENDPOINT)
+                .then();
+    }
+
 
 
 
@@ -262,15 +297,6 @@ public class TweetAPIClient extends RestAPI {
 //                .queryParam("tweet.fields", text)
                 .queryParam("id",id)
                 .when().get(baseUrl2+ this.GET_MENTION_USER)
-                .then();
-    }
-//upload image
-    public ValidatableResponse uploadImage(String image, String name){
-        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
-//                .queryParam("tweet.fields", text)
-                .param("image",image)
-                .param("name",name)
-                .when().post(this.baseUrl+ this.POST_IMAGE)
                 .then();
     }
 

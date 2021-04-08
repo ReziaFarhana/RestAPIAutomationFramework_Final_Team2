@@ -1,11 +1,14 @@
 package tweettest;
 
+import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import io.restassured.response.ValidatableResponse;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import payload.Mypayloads;
 import tweet.TweetAPIClient;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class TweetAPIClientTest {
@@ -233,6 +236,7 @@ public class TweetAPIClientTest {
         ArrayList<String> actualErrorMsg = response.extract().body().path("response.errors.reason");
         Assert.assertEquals(actualErrorMsg, errorReason, "Error not match");
 
+
     }
 
     @Test
@@ -445,13 +449,35 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualErrorCode,errorCode,"Code doesnt match buddy");
     }
 
+    @Test
+    public void testUserCanDirectMessage41() throws FileNotFoundException {
+        ValidatableResponse response = this.tweetAPIClient.messageCreate();
+        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
+
+    }
+
+    @Test
+    public void testImageUpload42() {
+        ValidatableResponse response = this.tweetAPIClient.uploadCutePic(Mypayloads.cuteImage());
+        System.out.println(response.extract().body().asPrettyString());
+    }
+    @Test
+    public void testUserCanCreateTweetWithPicture43(){
+        String tweet = "This is me right now!";
+        ValidatableResponse response = this.tweetAPIClient.createTweetWithPicture(tweet, 1380184472231022592l);
+        System.out.println(response.extract().body().asPrettyString());
+        Assert.assertEquals("200", 200);
+    }
 
 
 
 
     @Test
-    public void testUserCanCreateWelcomeMsg(){
-        ValidatableResponse response = this.tweetAPIClient.postWelcomeMsg();
+    public void testWelcomeMessage42() {
+        ValidatableResponse response = this.tweetAPIClient.createWelcomeMessage(Mypayloads.postWelcomeMessage(),
+                Mypayloads.cuteImage());
+        response.statusCode(200);
         System.out.println(response.extract().body().asPrettyString());
     }
 
@@ -460,13 +486,12 @@ public class TweetAPIClientTest {
 
 
 
-    @Test
-    public void testUserCanUploadImage(){
-        String imagePath = "../Twitter/src/main/java/pics/mypic.jpg";
-        String text = "Mention tweet";
-        ValidatableResponse response = this.tweetAPIClient.uploadImage(imagePath,"Easha Khanam");
-        System.out.println(response.extract().body().asPrettyString());
-    }
+
+
+
+
+
+
 
 
 

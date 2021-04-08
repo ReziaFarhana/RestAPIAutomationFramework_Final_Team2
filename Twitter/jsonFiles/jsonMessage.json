@@ -1,0 +1,13 @@
+{
+  "event": {
+    "type": "message_create",
+    "message_create": {
+      "target": {
+        "recipient_id": "1376012108211613700"
+      },
+      "message_data": {
+        "text": "Sending you some moree hehehe!! good night :)"
+      }
+    }
+  }
+}
