@@ -15,14 +15,16 @@ public class RestAPI {
     protected InputStream inputStream;
     protected String baseUrl;
     protected String apiVersion="1.1";
+    protected String uploadImageBaseUrl;
 
     public RestAPI() {
         //https://api.twitter.com/1.1/statuses/update.json
         this.baseUrl = "https://api.twitter.com/"+this.apiVersion;
+        this.uploadImageBaseUrl = "https://upload.twitter.com/"+this.apiVersion;
         this.properties = new Properties();
         inputStream = null;
         try {
-            // Path of the Secret.properties file
+//             Path of the Secret.properties file
             this.inputStream = new FileInputStream("../Twitter/secret.properties");
             this.properties.load(this.inputStream);
             this.apiKey = this.properties.getProperty("apiKey");
@@ -40,16 +42,6 @@ public class RestAPI {
             }
         }
 
-
     }
-
-
-
-
-
-
-
-
-
 
 }

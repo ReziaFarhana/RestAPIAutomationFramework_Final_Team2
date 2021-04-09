@@ -20,13 +20,15 @@ public class TweetAPIClientTest {
     @Test//create tweet-1 passed
     public void testUserCanTweetSuccessfully() {
         // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our First Tweet";
+        String tweet = "First Tweet- Hello World! Rest API is so Cool!";
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
         // Verify that the tweet is successful
         response.statusCode(200);
         // Verify tweet value
-        String actualTweet=response.extract().body().path("text");
-        Assert.assertEquals(actualTweet,tweet,"Tweet don't match");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, tweet, "Tweet don't match");
+        System.out.println(response.extract().body().asPrettyString());
     }
 
 
@@ -44,6 +46,8 @@ public class TweetAPIClientTest {
         System.out.println(id);
         Assert.assertNotEquals("id","text");
     }
+
+
     @Test//create tweet-3 passed
     public void testUserCanTweet() {
         // User sent a tweet
