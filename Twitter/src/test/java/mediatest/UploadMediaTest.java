@@ -7,6 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class UploadMediaTest {
@@ -20,7 +21,7 @@ public class UploadMediaTest {
 
     @Test //1
     public void TestUserCanUploadImage() throws IOException {
-        String path = filePath + "CuteImage3.txt";
+        String path = filePath + "CuteImage2.txt";
         ValidatableResponse response = this.uploadMedia.uploadImage(path);
         System.out.println(response.extract().body().asPrettyString());
     }
@@ -51,10 +52,33 @@ public class UploadMediaTest {
     }
 
     @Test //4
-    public void testUserCanCreateDirectMessagesWithImageAttachment() {
-        //String directMessage = "BRO!! I DID IT... U THE BEST...DROP THE BEAT";
-        ValidatableResponse response = this.uploadMedia.createDirectMessagesWithImageAttachment(1376273647225167881L,
-                "BRO!! I DID IT... U THE BEST...DROP THE BEAT", "media", 1380293401883635712L);
+    public void testUserCanCreateDirectMessagesWithImageAttachment() throws FileNotFoundException {
+        long recipientID = 1376273647225167881L;
+        ValidatableResponse response = this.uploadMedia.createDirectMessagesWithImageAttachment();
+        System.out.println(response.extract().body().asPrettyString());
+        long actualRecipientId = response.extract().body().path("event.message_create.target.recipient_id");
+        Assert.assertEquals(actualRecipientId,recipientID,"It is not the same ID");
+    }
+
+    @Test //5
+    public void testUserCanCreateDirectMessagesWithImageAttachment2() throws FileNotFoundException {
+        long recipientID = 1376271531341398017L;
+        ValidatableResponse response = this.uploadMedia.createDirectMessagesWithImageAttachment();
+        System.out.println(response.extract().body().asPrettyString());
+        long actualRecipientId = response.extract().body().path("event.message_create.target.recipient_id");
+        Assert.assertEquals(actualRecipientId,recipientID,"It is not the same ID");
+    }
+
+    @Test //6
+    public void testUserCanCreateChunkImageUpload() throws IOException {
+        String path = filePath + "CuteImage2.txt";
+        ValidatableResponse response = this.uploadMedia.chunkImageUpload(path,"dm_image",true,"INIT",31054,"image/jpeg");
+        System.out.println(response.extract().body().asPrettyString());
+    }
+
+    @Test
+    public void testUserCanCreateWelcomeMessage() throws FileNotFoundException {
+        ValidatableResponse response = this.uploadMedia.createWelcomeMessage();
         System.out.println(response.extract().body().asPrettyString());
     }
 

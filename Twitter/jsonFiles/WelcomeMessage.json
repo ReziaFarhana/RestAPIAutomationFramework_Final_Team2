@@ -1,0 +1,14 @@
+{
+  "welcome_message" : {
+    "name": "Welcome_to_my_world 01",
+    "message_data": {
+      "text": "Welcome! Welcome!",
+      "attachment": {
+        "type": "media",
+        "media": {
+          "id": "1380317765253406722"
+        }
+      }
+    }
+  }
+}

@@ -54,11 +54,5 @@ public class GetTweetTimelinesTest {
           List<Long> actualRecentTweetID = response.extract().body().jsonPath().getList("screen_name");
           Assert.assertEquals(actualRecentTweetID,expectedRecentTweetID, "Wrong tweet is displayed");
 
-//    String expectedText = "another mention tweet @eashaarap";
-//        ValidatableResponse response = this.tweetTimelines.retrieveRecentTweetFromUserTimeline(1379569473137557506L);
-//          System.out.println(response.extract().body().asPrettyString());
-//          String actualText = response.extract().body().path("text");
-//          Assert.assertEquals(actualText,expectedText);
-
     }
 }

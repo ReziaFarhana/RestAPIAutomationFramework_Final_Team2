@@ -1,0 +1,19 @@
+{
+  "event": {
+    "type": "message_create",
+    "message_create": {
+      "target": {
+        "recipient_id": "1376271531341398017"
+      },
+      "message_data": {
+        "text": "BRO!! I DID IT... U THE BEST...DROP THE BEAT",
+        "attachment": {
+          "type": "media",
+          "media": {
+            "id": "1380293863336783872"
+          }
+        }
+      }
+    }
+  }
+}

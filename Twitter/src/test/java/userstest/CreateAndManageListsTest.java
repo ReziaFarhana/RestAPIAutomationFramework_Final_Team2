@@ -71,15 +71,15 @@ public class CreateAndManageListsTest {
         Assert.assertEquals(actualAddedUserScreenName, addedUserScreenName, "User does not exist");
     }
 
-//    @Test //7
-//    public void testUserCanDeleteMemberFromList(){
-//        String addedUserScreenName = "Kaur0052";
-//        ValidatableResponse response = this.createAndManageLists.deleteMember(1379849975195168778L,"Kaur0052");
-//        System.out.println(response.extract().body().asPrettyString());
-////        String actualAddedUserScreenName = response.extract().body().path("users[0].screen_name");
-////        Assert.assertEquals(actualAddedUserScreenName,addedUserScreenName, "User does not exist");
-////
-//    }
+    @Test //7
+    public void testUserCanDeleteMemberFromList(){
+        String addedUserScreenName = "Kaur0052";
+        ValidatableResponse response = this.createAndManageLists.deleteMember(1379849975195168778L,"Kaur0052");
+        System.out.println(response.extract().body().asPrettyString());
+        String actualAddedUserScreenName = response.extract().body().path("users[0].screen_name");
+        Assert.assertEquals(actualAddedUserScreenName,addedUserScreenName, "User does not exist");
+
+    }
 
 
 }
