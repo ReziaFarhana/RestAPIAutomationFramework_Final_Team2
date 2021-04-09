@@ -63,6 +63,19 @@ public class UploadMedia extends RestAPI {
     }
 
     //chunk upload
+//    public ValidatableResponse chunkImageUpload(String chunkImagePath,String mediaCategory, boolean shared ,String command, int totalByte, String mediaType) throws IOException {
+//        String image = new String(Files.readAllBytes(Path.of(chunkImagePath)));
+//        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).header("Content-type", "application/json")
+//                .param("media_category",mediaCategory)
+//                .param("shared",shared)
+//                .param("command",command)
+//                .param("total_bytes",totalByte)
+//                .param("media_type",mediaType)
+//                .param("media",image)
+//                .when().post(this.uploadImageBaseUrl + this.POST_MEDIA_UPLOAD).then();
+//
+//    }
+
     public ValidatableResponse chunkImageUpload(String chunkImagePath,String mediaCategory, boolean shared ,String command, int totalByte, String mediaType) throws IOException {
         String image = new String(Files.readAllBytes(Path.of(chunkImagePath)));
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).header("Content-type", "application/json")
