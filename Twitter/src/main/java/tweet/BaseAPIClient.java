@@ -55,10 +55,10 @@ public class BaseAPIClient extends RestAPI {
                 when().post(this.baseUrl + this.POST_RETWEET_ENDPOINT).then();
     }
 
-     public ValidatableResponse unReTweetATweet(long ID) {
+    public ValidatableResponse unReTweetATweet(long ID) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
                 param("id", ID).
-                when().post(this.baseUrl + this.POST_UNRETWEET_ENDPOINT ).then();
+                when().post(this.baseUrl + this.POST_UNRETWEET_ENDPOINT).then();
     }
 
     public ValidatableResponse favoriteATweet(long ID) {
@@ -85,15 +85,15 @@ public class BaseAPIClient extends RestAPI {
                 when().post(this.baseUrl + this.CREATE_LISTS_LIST_ENDPOINT).then();
     }
 
-     public ValidatableResponse createListWithAccess(String tweet, String mode) {
+    public ValidatableResponse createListWithAccess(String tweet, String mode) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-                param("name", tweet). param("mode", mode).
+                param("name", tweet).param("mode", mode).
                 when().post(this.baseUrl + this.CREATE_LISTS_LIST_ENDPOINT).then();
     }
 
-     public ValidatableResponse createListWithAccessAndDescription(String tweet, String mode, String description) {
+    public ValidatableResponse createListWithAccessAndDescription(String tweet, String mode, String description) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-                param("name", tweet). param("mode", mode). param("description", description).
+                param("name", tweet).param("mode", mode).param("description", description).
                 when().post(this.baseUrl + this.CREATE_LISTS_LIST_ENDPOINT).then();
     }
 
@@ -103,51 +103,16 @@ public class BaseAPIClient extends RestAPI {
                 when().post(this.baseUrl + this.DELETE_LISTS_LIST_ENDPOINT).then();
     }
 
-public ValidatableResponse deleteListWithSlug(String slug,String name) {
+    public ValidatableResponse deleteListWithSlug(String slug, String name) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-                param("slug", slug). param("owner_screen_name", name).
+                param("slug", slug).param("owner_screen_name", name).
                 when().post(this.baseUrl + this.DELETE_LISTS_LIST_ENDPOINT).then();
     }
 
-
-
-
     public ValidatableResponse getFavorite() {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-               param("count").
-               when().get(this.baseUrl + this.GET_FAVORITES_LIST_ENDPOINT).then();
+                when().get(this.baseUrl + this.GET_FAVORITES_LIST_ENDPOINT).then();
     }
-
-    public ValidatableResponse kk(String url){
-        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-            param("attachment_url", url).
-            when().post(this.baseUrl + this.CREATE_TWEET_ENDPOINT).then();
-    }
-
-
-
-    public ValidatableResponse createListWissAndDescription(String ... strings) {
-        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-                param("name", strings). param("mode", strings). param("description", strings).
-                when().post(this.baseUrl + this.CREATE_LISTS_LIST_ENDPOINT).then();
-    }
-
-
-
-
-
-//    public ValidatableResponse getReTweetStatus(long ID) {
-//        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-//                param("id", ID).
-//                when().get(this.baseUrl + this.GET_RERETWEET_ENDPOINT).then();
-//                when().get(this.baseUrl + this.GET_RERETWEETERS_ENDPOINT).then();
-//    }
-
-
-
-
-
-
 
 
 }

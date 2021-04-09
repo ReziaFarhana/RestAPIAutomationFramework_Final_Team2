@@ -1,0 +1,19 @@
+{
+  "event": {
+    "type": "message_create",
+    "message_create": {
+      "target": {
+        "recipient_id": "1376273647225167881"
+      },
+      "message_data": {
+        "text": "I wish you all the best, you are an angle ",
+        "attachment": {
+          "type": "media",
+          "media": {
+            "id": "1380592290440298498"
+          }
+        }
+      }
+    }
+  }
+}

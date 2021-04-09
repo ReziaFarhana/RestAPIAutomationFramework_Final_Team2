@@ -143,6 +143,7 @@
                     <!--Test Runner Files-->
                     <includes>
                         <include>**/TestingTwitterEndPoints.java</include>
+                        <include>**/TestingTwitterEndPointsTwo.java</include>
                     </includes>
                     <suiteXmlFiles>
                         <!--   <suiteXmlFile>target/test-classes/AmazonTestRunner.xml</suiteXmlFile>-->

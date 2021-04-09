@@ -3,6 +3,9 @@ package tweet;
 import base.RestAPI;
 import io.restassured.response.ValidatableResponse;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.PortUnreachableException;
 import java.util.SplittableRandom;
 
 import static io.restassured.RestAssured.given;
@@ -23,7 +26,9 @@ public class BaseAPIClientTwo extends RestAPI {
     private final String POST_UPDATE_PROFILE_ENDPOINT = "/account/update_profile.json";
     private final String POST_MUTE_USERS_ENDPOINT = "/mutes/users/create.json";
     private final String POST_UNMUTE_USERS_ENDPOINT = "/mutes/users/destroy.json";
-
+    private final String POST_MEDIA_UPLOAD_ENDPOINT = "/media/upload.json";
+    private final String CREATE_TWEET_ENDPOINT = "/statuses/update.json";
+    private final String CREATE_MESSAGES_ENDPOINT = "/direct_messages/events/new.json";
 
     public ValidatableResponse createABlockAUser(String screen_name) {
         return given().auth().oauth(apiKey, apiSecretKey, accessToken, accessTokenSecret).
@@ -111,6 +116,39 @@ public class BaseAPIClientTwo extends RestAPI {
                 param("screen_name", screen_name).
                 when().post(baseUrl + POST_UNMUTE_USERS_ENDPOINT).then();
     }
+
+    public ValidatableResponse mediaUpload(String image){
+        return given().auth().oauth(apiKey, apiSecretKey, accessToken, accessTokenSecret).
+                param("media", image).
+                when().post(mediaUploadUrl + POST_MEDIA_UPLOAD_ENDPOINT).then();
+    }
+
+    public ValidatableResponse tweetTheImage(String tweet, long image) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
+                param("status", tweet).
+                param("media_ids", image).
+                when().post(this.baseUrl + this.CREATE_TWEET_ENDPOINT).then();
+    }
+
+    public ValidatableResponse createAMessage() throws FileNotFoundException {
+        FileInputStream json = new FileInputStream("../JSON_files/text_messaging.json");
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
+                header("content-type","application/json").
+                body(json).
+                when().post(this.baseUrl + this.CREATE_MESSAGES_ENDPOINT).then();
+    }
+
+    public ValidatableResponse createAMessageWithImage() throws FileNotFoundException {
+        FileInputStream json = new FileInputStream("../JSON_files/text_message_with_image.json");
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
+                header("content-type","application/json").
+                body(json).
+                when().post(this.baseUrl + this.CREATE_MESSAGES_ENDPOINT).then();
+    }
+
+
+
+
 
 
 
