@@ -46,7 +46,14 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_WELCOME_MESSAGE = "/direct_messages/welcome_messages/new.json";
     private final String welcomeMsgPath = "C:/Users/Easha/IdeaProjects/RestAPIAutomationFramework_Final_Team2" +
             "/Twitter/jsonFiles/welcomeMessage.json";
-    private final String CREATE_MEDIA_ENDPOINT = "/media/upload.json";
+    private final String POST_CREATE_MEDIA_ENDPOINT = "/media/upload.json";
+    private final String POST_UPDATE_PP_ENDPOINT = "/account/update_profile_image.json";
+    private final String POST_UPDATE_PB_ENDPOINT = "/account/update_profile_banner.json";
+    private final String GET_PB_ENDPOINT = "/users/profile_banner.json";
+    private final String JSON = ".json";
+    public final String directMsgWithPath = "../Twitter/jsonFiles/jsonMessageWithImage.json";
+    public final String POST_MEDIA_INIT_UPLOAD = "/media/upload.json";
+    public final String POST_MEDIA_APPEND_UPLOAD = "/media/upload.json";
 
 
 
@@ -247,17 +254,16 @@ public class TweetAPIClient extends RestAPI {
                 .when().post(this.baseUrl+this.POST_DIRECT_MESSAGE)
                 .then();
     }
-    public ValidatableResponse createWelcomeMessage( String payload, String image) {
+    public ValidatableResponse createWelcomeMessage() throws FileNotFoundException {
+        FileInputStream inputStream = new FileInputStream("../Twitter/jsonFiles/welcomeMessage.json");
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
-                .accept(ContentType.JSON)
                 .header("Content-Type", "application/json")
-                .contentType(ContentType.JSON)
-                .body(payload)
+                .body(inputStream)
                 .when().post(this.baseUrl + this.POST_WELCOME_MESSAGE)
                 .then().log().all();
     }
 
-
+//direct message
     public ValidatableResponse messageCreate() throws FileNotFoundException {
         FileInputStream jsonMessage = new FileInputStream("C:/Users/Easha/IdeaProjects" +
                 "/RestAPIAutomationFramework_Final_Team2/Twitter/jsonFiles/jsonMessage.json");
@@ -267,13 +273,70 @@ public class TweetAPIClient extends RestAPI {
                 .when().post(this.baseUrl + this.POST_DIRECT_MESSAGE)
                 .then();
     }
-
-    public ValidatableResponse uploadCutePic(String image) {
+    //direct message w/ pic attached
+    public ValidatableResponse messageCreateWithPicture() throws FileNotFoundException {
+        FileInputStream jsonMessage = new FileInputStream(directMsgWithPath);
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
-                .param("media", image)
-                .when().post(this.uploadImageBase + this.CREATE_MEDIA_ENDPOINT)
+                .header("Content-Type","application/json")
+                .body(jsonMessage)
+                .when().post(this.baseUrl + this.POST_DIRECT_MESSAGE)
                 .then();
     }
+
+    //upload pic to server
+    public ValidatableResponse uploadPic(String image) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("media", image)
+                .param("shared","true")
+                .when().post(this.uploadImageBase + this.POST_CREATE_MEDIA_ENDPOINT)
+                .then();
+
+
+    }
+    //for welcomemsg step 1
+    public ValidatableResponse uploadPicInit(String image) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("command", "INIT")
+                .param("media_category","dm_image" )
+                .param("total_bytes","9301")
+                .param("media_type","image/jpeg")
+                .param("media", image)
+                .param("shared", "true")
+                .when().post(this.uploadImageBase + this.POST_MEDIA_INIT_UPLOAD)
+                .then().log().all();
+    }
+    // step 2 for welcome msg
+    public ValidatableResponse uploadPicAppend(String image, long mediaID) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("command", "APPEND")
+                .param("media_id", mediaID)
+                .param("media_category","dm_image" )
+                .param("segment_index","2" )
+                .param("media", image)
+                .param("shared", "true")
+                .when().post(this.uploadImageBase + this.POST_MEDIA_INIT_UPLOAD)
+                .then().log().all();
+    }
+    public ValidatableResponse uploadPicStatus(String media, long mediaID) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("command", "STATUS")
+                .param("media_id", mediaID)
+                .param("media", media)
+                .param("media_category","dm_image" )
+                .param("shared", "true")
+                .when().post(this.uploadImageBase + this.POST_MEDIA_INIT_UPLOAD)
+                .then().log().all();
+    }
+    public ValidatableResponse uploadPicFinalize(long mediaID) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("command", "FINALIZE")
+                .param("media_id", mediaID)
+                .param("media_category","dm_image" )
+                .param("shared", "true")
+                .when().post(this.uploadImageBase + this.POST_MEDIA_INIT_UPLOAD)
+                .then().log().all();
+    }
+    //post pic via tweet
     public ValidatableResponse createTweetWithPicture(String tweet, Long mediaId){
         return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken,this.accessTokenSecret)
                 .param("status",tweet)
@@ -282,6 +345,27 @@ public class TweetAPIClient extends RestAPI {
                 .then();
     }
 
+
+    //upload profile pic
+    public ValidatableResponse uploadProfilePicture(String ppimage){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("image", ppimage)
+                .when().post(this.baseUrl+this.POST_UPDATE_PP_ENDPOINT)
+                .then();
+    }
+
+    public ValidatableResponse uploadProfileBanner(String pbimage){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("banner", pbimage)
+                .when().post(this.baseUrl+this.POST_UPDATE_PB_ENDPOINT)
+                .then();
+    }
+    public ValidatableResponse retrieveProfileBanner(Long userId){
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("user_id", userId)
+                .when().get(this.baseUrl + this.GET_PB_ENDPOINT)
+                .then();
+    }
 
 
 

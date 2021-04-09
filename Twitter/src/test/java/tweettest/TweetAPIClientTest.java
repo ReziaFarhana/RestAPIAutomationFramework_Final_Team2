@@ -2,6 +2,7 @@ package tweettest;
 
 import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import io.restassured.response.ValidatableResponse;
+import org.apache.http.HttpStatus;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -296,13 +297,15 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualErrorMsg, errorCode, "Error not match");
 
     }
+
     @Test
-    public void testUserCanDestroyCollection24(){
+    public void testUserCanDestroyCollection24() {
         ValidatableResponse response = this.tweetAPIClient.destroyCollectionList("custom-1379525033622700033");
         System.out.println(response.extract().body().asPrettyString());
         boolean actualDestroyed = response.extract().body().path("destroyed");
         Assert.assertTrue(actualDestroyed);
     }
+
     @Test
     public void testUserCanNotTweetTheSameTweetTwiceInArowUsingCode25() {
         // User sent a tweet
@@ -314,55 +317,62 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualTweet, expectedMessage, "Tweet match");
         Assert.assertNotEquals("403", 200);
     }
+
     @Test
-    public void testUserCanGetAccountSettings26(){
+    public void testUserCanGetAccountSettings26() {
         ValidatableResponse response = this.tweetAPIClient.getAccountSettings();
         System.out.println(response.extract().body().asPrettyString());
         boolean actualProtected = response.extract().body().path("protected");
         Assert.assertFalse(actualProtected);
     }
+
     @Test
-    public void testUserCanGetFriendsListUsingName27(){
+    public void testUserCanGetFriendsListUsingName27() {
         String name = "Kamala Harris";
         ValidatableResponse response = this.tweetAPIClient.getFriendsList();
         System.out.println(response.extract().body().asPrettyString());
         String actualName = response.extract().body().path("users[0].name");
         Assert.assertEquals(actualName, name, "Name doesnt match");
     }
+
     @Test
-    public void testUserCanGetFriendsListUsingID27(){
+    public void testUserCanGetFriendsListUsingID27() {
         Integer ID = 30354991;
         ValidatableResponse response = this.tweetAPIClient.getFriendsList();
         System.out.println(response.extract().body().asPrettyString());
         Integer actualID = response.extract().body().path("users[0].id");
         Assert.assertEquals(actualID, ID, "ID doesnt match");
     }
+
     @Test
-    public void testUserCanGetFriendsListUsingScreenName28(){
+    public void testUserCanGetFriendsListUsingScreenName28() {
         String screenName = "KamalaHarris";
         ValidatableResponse response = this.tweetAPIClient.getFriendsList();
         System.out.println(response.extract().body().asPrettyString());
         String actualScreenName = response.extract().body().path("users[0].screen_name");
         Assert.assertEquals(actualScreenName, screenName, "screen name doesnt match");
     }
+
     @Test
-    public void testUserCanGetFriendsListUsingLocation29(){
+    public void testUserCanGetFriendsListUsingLocation29() {
         String location = "Washington, DC";
         ValidatableResponse response = this.tweetAPIClient.getFriendsList();
         System.out.println(response.extract().body().asPrettyString());
         String actualLocation = response.extract().body().path("users[0].location");
         Assert.assertEquals(actualLocation, location, "location doesnt match");
     }
+
     @Test
-    public void testUserCanGetFriendsListUsingDescription30(){
+    public void testUserCanGetFriendsListUsingDescription30() {
         String description = "Fighting for the people. Wife, Momala, Auntie. She/her. Official account is @VP.";
         ValidatableResponse response = this.tweetAPIClient.getFriendsList();
         System.out.println(response.extract().body().asPrettyString());
         String actualDescription = response.extract().body().path("users[0].description");
         Assert.assertEquals(actualDescription, description, "location doesnt match");
     }
+
     @Test
-    public void testUserCanGetFriendsListUsingURL31(){
+    public void testUserCanGetFriendsListUsingURL31() {
         String url = "https://t.co/uBcfgtTRsi";
         ValidatableResponse response = this.tweetAPIClient.getFriendsList();
         System.out.println(response.extract().body().asPrettyString());
@@ -371,7 +381,7 @@ public class TweetAPIClientTest {
     }
 
     @Test
-    public void testUserCanGetTweetResponseTime32(){
+    public void testUserCanGetTweetResponseTime32() {
         ValidatableResponse response = this.tweetAPIClient.responseTime();
         System.out.println(response.extract().body().asPrettyString());
         String actualResponseTime = response.extract().body().path("[0]");
@@ -379,76 +389,83 @@ public class TweetAPIClientTest {
     }
 
     @Test
-    public void testUserCannotCreateCustomProfile33(){
+    public void testUserCannotCreateCustomProfile33() {
         String errorMsg = "Client is not permitted to perform this action.";
         ValidatableResponse response = this.tweetAPIClient.postCustomProfile("Test Me");
         System.out.println(response.extract().body().asPrettyString());
         String actualErrorMsg = response.extract().body().path("errors[0].message");
-        Assert.assertEquals(actualErrorMsg,errorMsg,"Error message doesnt match");
+        Assert.assertEquals(actualErrorMsg, errorMsg, "Error message doesnt match");
     }
+
     @Test //follow POTUS
-    public void testUserCanFollowByID34(){
+    public void testUserCanFollowByID34() {
         Long expectedId = 1349149096909668363l;
-        ValidatableResponse response = this.tweetAPIClient.postFollowUser("President Biden","POTUS");
+        ValidatableResponse response = this.tweetAPIClient.postFollowUser("President Biden", "POTUS");
         System.out.println(response.extract().body().asPrettyString());
-        Long actualId= response.extract().body().path("id");
-        Assert.assertEquals(actualId,expectedId,"IDs dont match sister");
+        Long actualId = response.extract().body().path("id");
+        Assert.assertEquals(actualId, expectedId, "IDs dont match sister");
 
     }
+
     @Test // follow bbcworld
-    public void testUserCanFollowByScreenName35(){
+    public void testUserCanFollowByScreenName35() {
         String expectedScreenName = "BBCWorld";
-        ValidatableResponse response = this.tweetAPIClient.postFollowUser("BBC News (World)","BBCWorld");
+        ValidatableResponse response = this.tweetAPIClient.postFollowUser("BBC News (World)", "BBCWorld");
         System.out.println(response.extract().body().asPrettyString());
-        String actualScreenName= response.extract().body().path("screen_name");
-        Assert.assertEquals(actualScreenName,expectedScreenName,"Screen Names dont match dear");
+        String actualScreenName = response.extract().body().path("screen_name");
+        Assert.assertEquals(actualScreenName, expectedScreenName, "Screen Names dont match dear");
 
     }
+
     @Test//follow mufti menk
-    public void testUserCanFollowByName36(){
+    public void testUserCanFollowByName36() {
         String expectedName = "Mufti Menk";
-        ValidatableResponse response = this.tweetAPIClient.postFollowUser("Mufti Menk","muftimenk");
+        ValidatableResponse response = this.tweetAPIClient.postFollowUser("Mufti Menk", "muftimenk");
         System.out.println(response.extract().body().asPrettyString());
-        String actualName= response.extract().body().path("name");
-        Assert.assertEquals(actualName,expectedName,"Names dont match sister");
+        String actualName = response.extract().body().path("name");
+        Assert.assertEquals(actualName, expectedName, "Names dont match sister");
 
     }
+
     @Test//block POTUS
-    public void testUserCanBlockByName37(){
+    public void testUserCanBlockByName37() {
         String expectedName = "President Biden";
-        ValidatableResponse response = this.tweetAPIClient.postBlockUsers("President Biden","POTUS");
+        ValidatableResponse response = this.tweetAPIClient.postBlockUsers("President Biden", "POTUS");
         System.out.println(response.extract().body().asPrettyString());
-        String actualName= response.extract().body().path("name");
-        Assert.assertEquals(actualName,expectedName,"Names dont match sister");
+        String actualName = response.extract().body().path("name");
+        Assert.assertEquals(actualName, expectedName, "Names dont match sister");
 
     }
+
     @Test //block kim kardashian
-    public void testUserCanBlockByScreenName38(){
+    public void testUserCanBlockByScreenName38() {
         String expectedScreenName = "KimKardashian";
-        ValidatableResponse response = this.tweetAPIClient.postBlockUsers("Kim Kardashian West","KimKardashian");
+        ValidatableResponse response = this.tweetAPIClient.postBlockUsers("Kim Kardashian West", "KimKardashian");
         System.out.println(response.extract().body().asPrettyString());
-        String actualScreenName= response.extract().body().path("screen_name");
-        Assert.assertEquals(actualScreenName,expectedScreenName,"Screen names dont match sister");
+        String actualScreenName = response.extract().body().path("screen_name");
+        Assert.assertEquals(actualScreenName, expectedScreenName, "Screen names dont match sister");
 
     }
+
     @Test
-    public void testUserCanGetListOfBlockedUsers39(){
-        List<String> blockusers = Arrays.asList("Kim Kardashian West","President Biden");
+    public void testUserCanGetListOfBlockedUsers39() {
+        List<String> blockusers = Arrays.asList("Kim Kardashian West", "President Biden");
         ValidatableResponse response = this.tweetAPIClient.getBlockUsersList(true);
         System.out.println(response.extract().body().asPrettyString());
         List<String> actualBlockedUsers = response.extract().body().jsonPath().getList("users.name");
-        Assert.assertEquals(actualBlockedUsers,blockusers,"Try again");
+        Assert.assertEquals(actualBlockedUsers, blockusers, "Try again");
     }
 
     @Test // This application is not allowed to access or delete your direct messages. error
-    public void testUserCanTSendDirectMessage40(){
+    public void testUserCanTSendDirectMessage40() {
         int errorCode = 93;
         ValidatableResponse response = this.tweetAPIClient.postDirectMessages();
         System.out.println(response.extract().body().asPrettyString());
         int actualErrorCode = response.extract().body().path("errors[0].code");
-        Assert.assertEquals(actualErrorCode,errorCode,"Code doesnt match buddy");
+        Assert.assertEquals(actualErrorCode, errorCode, "Code doesnt match buddy");
     }
 
+    // sending direct messages test
     @Test
     public void testUserCanDirectMessage41() throws FileNotFoundException {
         ValidatableResponse response = this.tweetAPIClient.messageCreate();
@@ -456,95 +473,119 @@ public class TweetAPIClientTest {
         System.out.println(response.extract().body().asPrettyString());
 
     }
+    //sending direct messages with picture test
+    @Test
+    public void testUserCanSendDirectMsgWithPicture42() throws FileNotFoundException {
+        ValidatableResponse response = this.tweetAPIClient.messageCreateWithPicture();
+//        response.statusCode(200);
+        System.out.println(response.extract().body().asPrettyString());
 
-    @Test
-    public void testImageUpload42() {
-        ValidatableResponse response = this.tweetAPIClient.uploadCutePic(Mypayloads.cuteImage());
-        System.out.println(response.extract().body().asPrettyString());
-    }
-    @Test
-    public void testUserCanCreateTweetWithPicture43(){
-        String tweet = "This is me right now!";
-        ValidatableResponse response = this.tweetAPIClient.createTweetWithPicture(tweet, 1380184472231022592l);
-        System.out.println(response.extract().body().asPrettyString());
-        Assert.assertEquals("200", 200);
     }
 
+    //upload pic
+    @Test
+    public void testImageUpload43() {
+        ValidatableResponse response = this.tweetAPIClient.uploadPic(Mypayloads.welcomeImage());
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+    }
+    @Test
+    public void testUserCanUploadPicInit44(){
+        ValidatableResponse response = this.tweetAPIClient.uploadPicInit(Mypayloads.welcomeImage());
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_ACCEPTED);
+    }
+    @Test
+    public void testUserCanUploadPicAppend45(){
+        ValidatableResponse response = this.tweetAPIClient.uploadPicAppend(Mypayloads.welcomeImage(),
+                1380350915178283010l);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_NO_CONTENT);
+    }
+    @Test
+    public void testUserCanUploadPicStatus46(){
+        ValidatableResponse response = this.tweetAPIClient.uploadPicStatus(Mypayloads.welcomeImage(),
+                1380350915178283010l);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_OK);
+    }
+    @Test
+    public void testUserCanUploadPicFinalize47(){
+        String error= "Segments do not add up to provided total file size.";
+        ValidatableResponse response = this.tweetAPIClient.uploadPicFinalize(1380350915178283010l);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualError = response.extract().body().path("error");
+        Assert.assertEquals(actualError,error,"Error doesnt match buddy");
+    }
 
+    //post a tweet w/ pic
+    @Test
+    public void testUserCanCreateTweetWithPicture48() {
+        String tweet = "I need coffeeeeee helpppp!!";
+        ValidatableResponse response = this.tweetAPIClient.createTweetWithPicture(tweet, 1380333555897806851l);
+        System.out.println(response.extract().body().asPrettyString());
+//        Assert.assertEquals("200", 200);
+    }
+
+    //tweet a picture: panda
+    @Test
+    public void testUserCanCreateTweetWithPanda49() {
+        String tweet = "Panda Panda Panda Pandaaaaaaaaa!!!!!!";
+        ValidatableResponse response = this.tweetAPIClient.createTweetWithPicture(tweet, 1380256975175450630l);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_OK);
+    }
+
+    //upload profile pic test
+    @Test
+    public void testUserCanUploadProfilePic50() {
+        ValidatableResponse response = this.tweetAPIClient.uploadProfilePicture(Mypayloads.profilepic());
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_OK);
+
+    }
+
+    @Test
+    public void testUserCanUploadProfileBanner51() {
+        ValidatableResponse response = this.tweetAPIClient.uploadProfileBanner(Mypayloads.profileBanner());
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_CREATED);
+
+    }
+
+    @Test
+    public void testUserCanGetProfileBanner52() {
+        ValidatableResponse response = this.tweetAPIClient.retrieveProfileBanner(1376273647225167881l);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(HttpStatus.SC_OK);
+
+    }
+
+    @Test
+    public void testUserCanUploadMonkeyPic53(){
+        ValidatableResponse response = this.tweetAPIClient.uploadPic(Mypayloads.unicorn());
+        System.out.println(response.extract().body().asPrettyString());
+    }
+
+
+// failed
 
 
     @Test
-    public void testWelcomeMessage42() {
-        ValidatableResponse response = this.tweetAPIClient.createWelcomeMessage(Mypayloads.postWelcomeMessage(),
-                Mypayloads.cuteImage());
+    public void testWelcomeMessage42() throws FileNotFoundException {
+        ValidatableResponse response = this.tweetAPIClient.createWelcomeMessage();
         response.statusCode(200);
         System.out.println(response.extract().body().asPrettyString());
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Test
-    public void testUserCanMention(){
+    public void testUserCanMention() {
         Long id = 1376012108211613700l;
         String text = "Mention tweet";
         ValidatableResponse response = this.tweetAPIClient.mentionUser(id);
         System.out.println(response.extract().body().asPrettyString());
     }
-
-
-
-
-
-
-//    @Test
-//    public void testUserGetStatuses13111(){
-//        String expectedTweet = "I am tweeting my life way9c65518e-d934-4d53-86c0-b43d408495ff";
-//        ValidatableResponse response = this.tweetAPIClient.getStatuses(1379152604618485760l);
-//        System.out.println(response.extract().body().asPrettyString());
-//        String actualTweet= response.extract().body().path("text");
-//        Assert.assertEquals(actualTweet, expectedTweet, "Text not match");
-//
-//    }
-
-
-//    @Test(enabled = false)
-//    public void testResponseTime() {
-//        ValidatableResponse response = this.tweetAPIClient.responseTime();
-//    }
-//    @Test(enabled = false)
-//    public void testHeaderValue() {
-//        this.tweetAPIClient.headerValue();
-//    }
-//
-//    @Test(enabled = false)
-//    public void testPropertyFromResponse() {
-//        //1. User send a tweet
-//        String tweet = "We are learning Rest API Automation with restApiAutomation_Final_Farhana" + UUID.randomUUID().toString();
-//        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
-//        //2. Verify that the tweet was successful
-//        // response.statusCode(200);
-//
-//        //this.tweetAPIClient.checkProperty();
-//        //JsonPath pathEvaluator=response.;
-//        //System.out.println(response.extract().body().asPrettyString());
-//        System.out.println(response.extract().body().asPrettyString().contains("id"));
-//
-//        //String actualTweet = response.extract().body().path("text");
-//        //Assert.assertEquals(actualTweet, tweet, "Tweet is not match");
-//    }
-
 
 
 }

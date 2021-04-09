@@ -24,7 +24,7 @@ public class PostAPIClientTest {
     }
 
     @Test
-    public void testGetAllPosts44(){
+    public void testGetAllPosts54(){
         ValidatableResponse response=this.postsAPIClient.getAllPosts();
         response.statusCode(HttpStatus.SC_OK);
         System.out.println(response.extract().body().asPrettyString());
@@ -32,7 +32,7 @@ public class PostAPIClientTest {
 
     // write a test that creates a post
     @Test
-    public void testUserCanCreateAPostUsingPojoSuccessfully45() {
+    public void testUserCanCreateAPostUsingPojoSuccessfully55() {
         PostPojo obj = new PostPojo(11, 101, "test title", "test body");
         ValidatableResponse response = this.postsAPIClient.createPost(obj);
         response.statusCode(HttpStatus.SC_CREATED);
@@ -41,7 +41,7 @@ public class PostAPIClientTest {
     }
 
     @Test
-    public void testUserCanCreateAPostSuccessfully46() {
+    public void testUserCanCreateAPostSuccessfully56() {
         int userId = 11;
         String title = "test title";
         String body = "test body";
@@ -62,7 +62,7 @@ public class PostAPIClientTest {
         Assert.assertEquals(actualBody, body);
     }
     @Test
-    public void testUserCanFetchId47(){
+    public void testUserCanFetchId57(){
         LinkedHashMap<String,Integer>  expectedId = new LinkedHashMap();
         expectedId.put("id", 13);
         ValidatableResponse response = this.postsAPIClient.getAllPhotos();
@@ -73,14 +73,14 @@ public class PostAPIClientTest {
 
     }
     @Test
-    public void testUserCanDeletePost48() {
+    public void testUserCanDeletePost58() {
         ValidatableResponse response = this.postsAPIClient.deletePost(2);
         response.statusCode(HttpStatus.SC_OK);
     }
 
 
     @Test
-    public void testUserUploadPhoto49() {
+    public void testUserUploadPhoto59() {
         JSONObject obj = new JSONObject();
         obj.put("id", "30");
         ValidatableResponse response = this.postsAPIClient.uploadPhoto(obj);
@@ -88,7 +88,7 @@ public class PostAPIClientTest {
         System.out.println(response.extract().body().asPrettyString());
     }
     @Test
-    public void testUserUploadPhoto50() {
+    public void testUserUploadPhoto60() {
         String title = "reprehenderit est deserunt velit ipsam";
         ValidatableResponse response = this.postsAPIClient.getPhoto(title);
         response.statusCode(HttpStatus.SC_OK);
@@ -97,7 +97,7 @@ public class PostAPIClientTest {
         Assert.assertEquals(actualTitle,title, "title doesnt match");
     }
     @Test
-    public void testUserCanGetCommentsUsingPostID51() {
+    public void testUserCanGetCommentsUsingPostID61() {
         int commentCount = 5;
         ValidatableResponse response = this.postsAPIClient.getComment(3);
         response.statusCode(HttpStatus.SC_OK);
@@ -107,7 +107,7 @@ public class PostAPIClientTest {
     }
 
     @Test
-    public void testGetAllUsers52(){
+    public void testGetAllUsers62(){
         int phoneCount = 10;
         ValidatableResponse response = this.postsAPIClient.getAllUsers();
         System.out.println(response.extract().body().asPrettyString());
