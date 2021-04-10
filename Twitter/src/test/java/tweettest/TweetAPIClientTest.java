@@ -216,7 +216,7 @@ public class TweetAPIClientTest {
 
     @Test
     public void getList() {
-        ValidatableResponse response = base.getAllists("Nafiz");
+        ValidatableResponse response = base.getAllLists("Nafiz");
         response.statusCode(200);
         System.out.println(response.extract().body().asPrettyString());
     }

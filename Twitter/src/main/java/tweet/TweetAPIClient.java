@@ -17,34 +17,26 @@ public class TweetAPIClient extends RestAPI {
     private final String POST_RETWEET_ENDPOINT = "/statuses/retweet.json";
     private final String POST_UNRETWEET_ENDPOINT = "/statuses/unretweet.json";
     private final String POST_FAVORITES_ENDPOINT = "/favorites/create.json";
-    private final String POST_UNFAVORITES_ENDPOINT = "/favorites/destroy.json";
+    private final String POST_UNFAVORITE_ENDPOINT = "/favorites/destroy.json";
     private final String GET_RETWEETS_OF_ME_ENDPOINT = "/statuses/retweets_of_me.json";
-    private final String GET_RERETWEET_ENDPOINT = "/statuses/retweets.json";
     private final String GET_FAVORITES_LIST_ENDPOINT = "/favorites/list.json";
     private final String GET_LISTS_LIST_ENDPOINT = "/lists/list.json";
     private final String CREATE_LISTS_LIST_ENDPOINT = "/lists/create.json";
     private final String DELETE_LISTS_LIST_ENDPOINT = "/lists/destroy.json";
     private final String GET_BLOCK_ENDPOINT = "/blocks/ids.json";
-    private final String GET_RERETWEETERS_ENDPOINT = "/statuses/retweeters.json";
     private final String POST_COLLECTIONS_ENDPOINT = "/collections/create.json";
 
-
-    public ValidatableResponse unBlockABloackedUser(String screen_name) {
-        return given().auth().oauth(apiKey, apiSecretKey, accessToken, accessTokenSecret).
-                param("screen_name", screen_name).
-                when().post(baseUrl + POST_UNBLOCK_ENDPOINT).then();
-    }
-
-    public ValidatableResponse getAllists(String screenName) {
-        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
-                param("screen_name", screenName).
-                when().get(this.baseUrl + this.GET_LISTS_LIST_ENDPOINT).then();
-    }
 
     public ValidatableResponse userCanTweet(String tweet) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
                 param("status", tweet).
                 when().post(this.baseUrl + this.CREATE_TWEET_ENDPOINT).then();
+    }
+
+    public ValidatableResponse getAllLists(String screenName) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
+                param("screen_name", screenName).
+                when().get(this.baseUrl + this.GET_LISTS_LIST_ENDPOINT).then();
     }
 
     public ValidatableResponse readASingleTweetID(long ID) {
@@ -80,7 +72,7 @@ public class TweetAPIClient extends RestAPI {
     public ValidatableResponse unfavoriteATweet(long ID) {
         return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret).
                 param("id", ID).
-                when().post(this.baseUrl + this.POST_UNFAVORITES_ENDPOINT).then();
+                when().post(this.baseUrl + this.POST_UNFAVORITE_ENDPOINT).then();
     }
 
     public ValidatableResponse listOfRetweetOfMe() {
@@ -143,7 +135,12 @@ public class TweetAPIClient extends RestAPI {
     public ValidatableResponse getAccountSetting() {
         return given().auth().oauth(apiKey, apiSecretKey, accessToken, accessTokenSecret).
                 when().get(baseUrl + GET_ACCOUNT_SETTING_ENDPOINT).then();
-    }
 
+    }
+    public ValidatableResponse unBlockABloackedUser(String screen_name) {
+        return given().auth().oauth(apiKey, apiSecretKey, accessToken, accessTokenSecret).
+                param("screen_name", screen_name).
+                when().post(baseUrl + POST_UNBLOCK_ENDPOINT).then();
+    }
 }
 
