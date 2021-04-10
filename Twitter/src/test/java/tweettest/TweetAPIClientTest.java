@@ -4,6 +4,7 @@ import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.ResponseSpecification;
+import load.LoadMedia;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
@@ -12,12 +13,12 @@ import org.testng.annotations.Test;
 import tweet.TweetAPIClient;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.UUID;
 
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 
 public class TweetAPIClientTest {
@@ -187,7 +188,6 @@ public class TweetAPIClientTest {
         Assert.assertEquals(username, expectedFollow, "Test Fail- Unable to follow");
     }
 
-
     @Test
     @Parameters ("username")
     public void testUserCanUnFollow(@Optional("RealJorg") String username) {
@@ -198,6 +198,26 @@ public class TweetAPIClientTest {
         Assert.assertEquals(username, expectedUnFollow, "Test Fail- Unable to UnFollow");
     }
 
+    @Test
+    public void testUserCanFollow2() {
+        String screenName="netflix";
+        ValidatableResponse response = this.tweetAPIClient.postTwitterFollow2(screenName);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String actualText=response.extract().body().path("screen_name");
+        Assert.assertEquals(screenName, actualText, "Test Fail- Unable to follow");
+    }
+
+    @Test
+    public void testUserCanUnFollow2() {
+        String screenName="netflix";
+        ValidatableResponse response = this.tweetAPIClient.postTwitterUnFollow2(screenName);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String expectedScreenName = "netflix";
+        String actualText=response.extract().body().path("screen_name");
+        Assert.assertEquals(expectedScreenName, actualText, "Test Fail- Unable to UnFollow");
+    }
 
     @Test
     public void testUserCanGetTweetResponseTime(){
@@ -207,10 +227,9 @@ public class TweetAPIClientTest {
         Assert.assertTrue(Boolean.parseBoolean(actualResponseTime));
     }
 
-
     @Test
     public void testUploadPic() {
-        response = this.tweetAPIClient.uploadPic(TweetAPIClient.image());
+        response = this.tweetAPIClient.uploadPic(LoadMedia.puppy());
         System.out.println(response.extract().body().asPrettyString());
     }
 
@@ -224,7 +243,6 @@ public class TweetAPIClientTest {
 
     // Woof Woof World! :)  mediaId: 1380455667123716099l
 
-
     @Test
     public void testUserCanCountFriendsList() {
         response = tweetAPIClient.getTwitterFriendsList("@Parisa43885814");
@@ -234,11 +252,10 @@ public class TweetAPIClientTest {
                 .and().body("users", hasSize(3));
     }
 
-
     @Test
     public void testUserGetStatuses() {
         String expectedTweet = "Software is a great combination between artistry and engineering.";
-        ValidatableResponse response = this.tweetAPIClient.getStatuses(1380704055995998212l);
+        response = this.tweetAPIClient.getStatuses(1380704055995998212l);
         System.out.println(response.extract().body().asPrettyString());
         String actualTweet = response.extract().body().path("text");
         Assert.assertEquals(actualTweet, expectedTweet, "Test Fail- Text does not match");
@@ -247,18 +264,74 @@ public class TweetAPIClientTest {
     @Test
     public void testUserCannotGetsStatuses() {
         String errorMsg = "No status found with that ID.";
-        ValidatableResponse response = this.tweetAPIClient.getStatuses(1380439692517100000l);
+        response = this.tweetAPIClient.getStatuses(1380439692517100000l);
         System.out.println(response.extract().body().asPrettyString());
         String actualErrorMsg = response.extract().body().path("errors[0].message");
         Assert.assertEquals(actualErrorMsg, errorMsg, "Test Fail- Error does not match");
     }
 
+    @Test
+    public void testUserCanCreateList() {
+        String name = "Automation Engineers";
+        response = this.tweetAPIClient.createList(name);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String actualTweet = response.extract().body().path("name");
+        Assert.assertEquals(actualTweet, name, "Test Fail- Text does not match");
+    }
 
+//      "id": 1380810534371483650,
+//      "slug": "automation-engineers-17016",
 
+    @Test
+    public void testDestroyList() {
+        String name = "Automation Engineers";
+        long id=1380810534371483650L;
+        String owner= "@Parisa43885814";
+        String slug= "automation-engineers-17016";
+        response = this.tweetAPIClient.deleteList(owner,slug);
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String actualTweet = response.extract().body().path("name");
+        Assert.assertEquals(actualTweet, name, "Test Fail- Text does not match");
+    }
 
+    @Test
+    public void testGetAllLists() {
+        response = this.tweetAPIClient.getAllLists();
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String listName = "Automation Engineers";
+        String actualText=response.extract().body().path("[0].name");
+        Assert.assertEquals(listName, actualText,"Test Fail- Text does not match");
+    }
 
+    @Test
+    public void testUserCanSendDirectMessage() throws FileNotFoundException {
+        response = this.tweetAPIClient.sendDirectMessage();
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String actualType= "message_create";
+        String expectedName=response.extract().body().path( "event.type");
+        Assert.assertEquals(expectedName, actualType, "Test Fail- Text does not match");
+    }
 
+    @Test
+    public void testUserCanUpdateProfileBanner() {
+        response = this.tweetAPIClient.updateProfileBanner(LoadMedia.profileBanner());
+//        System.out.println(response.extract().body().asPrettyString());
+//        Assert.assertEquals("200", 200);
+    }
 
+    @Test
+    public void testUserCanUpdateProfilePicture() {
+        response = this.tweetAPIClient.updateProfilePicture(LoadMedia.profilePicture());
+        System.out.println(response.extract().body().asPrettyString());
+        response.statusCode(200);
+        String actualName= "Parisa";
+        String expectedName=response.extract().body().path( "name");
+        Assert.assertEquals(expectedName, actualName, "Test Fail- Text does not match");
+    }
 
 
 
@@ -281,7 +354,7 @@ public class TweetAPIClientTest {
 //    @Test(enabled = false)
 //    public void testPropertyFromResponse() {
 //        //1. User send a tweet
-//        String tweet = "We are learning Rest API Automation with restApiAutomation_Final_Farhana" + UUID.randomUUID().toString();
+//        String tweet = "We are learning Rest API Automation with restApiAutomation" + UUID.randomUUID().toString();
 //        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
 //        //2. Verify that the tweet was successful
 //        // response.statusCode(200);
@@ -294,5 +367,8 @@ public class TweetAPIClientTest {
 //        //String actualTweet = response.extract().body().path("text");
 //        //Assert.assertEquals(actualTweet, tweet, "Tweet is not match");
 //    }
+
+
+
 
 }

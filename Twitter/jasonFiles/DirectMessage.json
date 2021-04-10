@@ -3,9 +3,9 @@
     "type": "message_create",
     "message_create": {
       "target": {
-        "recipient_id": "RECIPIENT_USER_ID"
+        "recipient_id": "1376256858520907776"
       },
-      "message_data": {"text": "Hello World!"
+      "message_data": {"text": "Hello Hello!!"
       }
     }
   }

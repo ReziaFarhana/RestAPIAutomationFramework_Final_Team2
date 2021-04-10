@@ -1,6 +1,7 @@
 package tweet;
 
 import base.RestAPI;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -16,13 +17,21 @@ public class TweetAPIClient extends RestAPI {
     private final String CREATE_TWEET_ENDPOINT="/statuses/update.json";
     private final String DELETE_TWEET_ENDPOINT="/statuses/destroy.json";
     private final String GET_USER_TWEET_ENDPOINT="/statuses/home_timeline.json";
+    private final String GET_STATUSES = "/statuses/show.json";
+    private final String GET_LISTS_LIST_ENDPOINT = "/lists/list.json";
     private final String CREATE_RETWEET_ENDPOINT = "/statuses/retweet.json";
+    private final String CREATE_LIST_ENDPOINT = "/lists/create.json";
+    private final String DESTROY_LIST_ENDPOINT = "/lists/destroy.json";
+    private final String DESTROY_FOLLOWERS_ENDPOINT = "/friendships/destroy.json";
     private final String POST_LIKE_ENDPOINT = "/favorites/create.json";
     private final String POST_UNLIKE_ENDPOINT = "/favorites/destroy.json";
+    private final String POST_FRIENDSHIPS_CREATE_ENDPOINT = "/friendships/create.json";
+    private final String POST_DIRECT_MESSAGE_END_POINT = "/direct_messages/events/new.json";
+    private final String POST_UPDATE_PROFILE_IMAGE_END_POINT = "/account/update_profile_image.json";
+    private final String POST_UPDATE_PROFILE_BANNER_END_POINT = "/account/update_profile_banner.json";
     private final String ENDPOINT_CREATE_FOLLOW = "/friendships/create.json";
     private final String ENDPOINT_UNFOLLOW = "/friendships/destroy.json";
     private final String ENDPOINT_FRIENDS_LIST = "/friends/list.json";
-    private final String GET_STATUSES = "/statuses/show.json";
     private final String CREATE_DIRECT_MESSAGES_ENDPOINT = "/direct_messages/events/new.json";
     private final String GET_DIRECT_MESSAGES_LIST_ENDPOINT = "/direct_messages/events/list.json";
     private final String DELETE_DIRECT_MESSAGES_ENDPOINT = "/direct_messages/events/destroy.json";
@@ -119,6 +128,18 @@ public class TweetAPIClient extends RestAPI {
                 .when().post(this.baseUrl+this.ENDPOINT_UNFOLLOW).then();
     }
 
+    public ValidatableResponse postTwitterFollow2(String userName) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .queryParam("id", userName)
+                .post(this.baseUrl + this.POST_FRIENDSHIPS_CREATE_ENDPOINT).then();
+    }
+
+    public ValidatableResponse postTwitterUnFollow2(String userName) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .queryParam("id", userName)
+                .post(this.baseUrl + this.DESTROY_FOLLOWERS_ENDPOINT).then();
+    }
+
 
     //Get Friend List
     public ValidatableResponse getTwitterFriendsList(String userName) {
@@ -161,6 +182,56 @@ public class TweetAPIClient extends RestAPI {
                 .when().post(this.baseUrl+this.CREATE_TWEET_ENDPOINT)
                 .then();
     }
+
+
+    public ValidatableResponse createList(String name) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("name", name)
+                .post(this.baseUrl + this.CREATE_LIST_ENDPOINT).then();
+    }
+
+    public ValidatableResponse deleteList( String owner, String slug) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("owner",owner)
+                .param("slug",slug)
+                .post(this.baseUrl + this.DESTROY_LIST_ENDPOINT).then();
+    }
+
+    public ValidatableResponse getAllLists() {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .when().get(this.baseUrl + this.GET_LISTS_LIST_ENDPOINT).then().statusCode(200);
+    }
+
+    // send direct message
+    public ValidatableResponse sendDirectMessage() throws FileNotFoundException {
+        String filePath="C:\\Users\\gram_\\IdeaProjects\\RestAPIAutomationFramework_Final_Team2\\Twitter\\jasonFiles\\DirectMessage.json";
+        FileInputStream message=new FileInputStream(filePath);
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .log().all()
+                .accept(ContentType.JSON)
+                .header("Content-type", "application/json")
+                .contentType(ContentType.JSON)
+                .body(message)
+                .when().post(this.baseUrl + this.POST_DIRECT_MESSAGE_END_POINT)
+                .then().log().all();
+    }
+
+    // update profile picture
+    public ValidatableResponse updateProfilePicture(String image) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("image", image)
+                .when().post(this.baseUrl + this.POST_UPDATE_PROFILE_IMAGE_END_POINT)
+                .then();
+    }
+
+    // update profile picture
+    public ValidatableResponse updateProfileBanner(String banner) {
+        return given().auth().oauth(this.apiKey, this.apiSecretKey, this.accessToken, this.accessTokenSecret)
+                .param("banner", banner)
+                .when().post(this.baseUrl + this.POST_UPDATE_PROFILE_BANNER_END_POINT)
+                .then();
+    }
+
 
 
 
