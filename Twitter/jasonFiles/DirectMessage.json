@@ -1,0 +1,12 @@
+{
+  "event": {
+    "type": "message_create",
+    "message_create": {
+      "target": {
+        "recipient_id": "RECIPIENT_USER_ID"
+      },
+      "message_data": {"text": "Hello World!"
+      }
+    }
+  }
+}

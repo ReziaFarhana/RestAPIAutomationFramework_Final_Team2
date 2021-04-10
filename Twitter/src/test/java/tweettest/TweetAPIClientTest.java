@@ -11,13 +11,18 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import tweet.TweetAPIClient;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.UUID;
+
+
+import static org.hamcrest.Matchers.hasSize;
 
 public class TweetAPIClientTest {
 
     private TweetAPIClient tweetAPIClient;
-    private String expectedWBPath = System.getProperty("user.dir")+"\\src\\test\\resources\\Test_Data.xlsx";
 
     ValidatableResponse response;
     ResponseSpecification checkStatusCodeAndContentType = new ResponseSpecBuilder()
@@ -33,7 +38,8 @@ public class TweetAPIClientTest {
     @Test
     public void testUserCanTweetSuccessfully() {
         // User sent a tweet
-        String tweet = "Tweet2- Hello World! Rest API is so Cool!";
+//        String tweet = "Tweet2- Hello World! Rest API is so Cool!";
+        String tweet= "Software is a great combination between artistry and engineering.";
         response = this.tweetAPIClient.createTweet(tweet);
 
         // To check the response in the console
@@ -171,7 +177,6 @@ public class TweetAPIClientTest {
         Assert.assertFalse(actualLikedTweet);
     }
 
-//Post
     @Test
     @Parameters("username")
     public void testUserCanFollow(@Optional("PrimeVideo") String username) {
@@ -183,7 +188,6 @@ public class TweetAPIClientTest {
     }
 
 
-//POST
     @Test
     @Parameters ("username")
     public void testUserCanUnFollow(@Optional("RealJorg") String username) {
@@ -191,14 +195,8 @@ public class TweetAPIClientTest {
         response.assertThat().spec(checkStatusCodeAndContentType);
         String expectedUnFollow = response.extract().response().body().jsonPath().getJsonObject("screen_name").toString();
         System.out.println("Un-Followed: " + expectedUnFollow);
-        Assert.assertEquals(username, expectedUnFollow, "Test Fail- Unable to unfollow");
+        Assert.assertEquals(username, expectedUnFollow, "Test Fail- Unable to UnFollow");
     }
-
-
-
-
-
-
 
 
     @Test
@@ -210,9 +208,6 @@ public class TweetAPIClientTest {
     }
 
 
-
-
-
     @Test
     public void testUploadPic() {
         response = this.tweetAPIClient.uploadPic(TweetAPIClient.image());
@@ -221,12 +216,42 @@ public class TweetAPIClientTest {
 
     @Test
     public void testUserCanPostTweetWithPic() {
-        String tweet = "Woof Woof World! :) ";
-        response = this.tweetAPIClient.postTweetWithPic(tweet, 1380455667123716099l);
+        String tweet = "Spring adds new life and new beauty to all that is. Hello Spring 2021!";
+        response = this.tweetAPIClient.postTweetWithPic(tweet, 1380665065255227393l);
         System.out.println(response.extract().body().asPrettyString());
         Assert.assertEquals("200", 200);
     }
 
+    // Woof Woof World! :)  mediaId: 1380455667123716099l
+
+
+    @Test
+    public void testUserCanCountFriendsList() {
+        response = tweetAPIClient.getTwitterFriendsList("@Parisa43885814");
+        List<String> responseString = response.extract().response().body().jsonPath().getList("users");
+        System.out.println("Size of \"Users Friends List\" is: "+responseString.size());
+        response.assertThat().spec(checkStatusCodeAndContentType)
+                .and().body("users", hasSize(3));
+    }
+
+
+    @Test
+    public void testUserGetStatuses() {
+        String expectedTweet = "Software is a great combination between artistry and engineering.";
+        ValidatableResponse response = this.tweetAPIClient.getStatuses(1380704055995998212l);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualTweet = response.extract().body().path("text");
+        Assert.assertEquals(actualTweet, expectedTweet, "Test Fail- Text does not match");
+    }
+
+    @Test
+    public void testUserCannotGetsStatuses() {
+        String errorMsg = "No status found with that ID.";
+        ValidatableResponse response = this.tweetAPIClient.getStatuses(1380439692517100000l);
+        System.out.println(response.extract().body().asPrettyString());
+        String actualErrorMsg = response.extract().body().path("errors[0].message");
+        Assert.assertEquals(actualErrorMsg, errorMsg, "Test Fail- Error does not match");
+    }
 
 
 
