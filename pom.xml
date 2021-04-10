@@ -9,9 +9,6 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-<!--        <module>Generic</module>-->
-<!--        <module>Twitter</module>-->
-<!--        <module>TypiCode</module>-->
         <module>Generic</module>
         <module>Twitter</module>
         <module>TypiCode</module>
@@ -146,13 +143,20 @@
                     <testFailureIgnore>true</testFailureIgnore>
                     <!--Test Runner Files-->
                     <includes>
-                        <include>**/TweetAPIClientTest.java</include>
-                        <include>**/PostAPIClientTest.java</include>
+                        <include>**/SendingAndReceivingEventsTest.java</include>
+                        <include>**/UploadMediaTest.java</include>
+                        <include>**/GetTrendsNearALocationTest.java</include>
+                        <include>**/CurateACollectionOfTweetsTest.java</include>
+                        <include>**/FilterRealTimeTweetsTest.java</include>
+                        <include>**/GetTweetTimelinesTest.java</include>
+                        <include>**/PostRetrieveAndEngageWithTweetsTest.java</include>
+                        <include>**/CreateAndManageListsTest.java</include>
+                        <include>**/FollowSearchAndGetUsersTest.java</include>
+                        <include>**/ManageAccountSettingsAndProfileTest.java</include>
+                        <include>**/MuteBlockAndReportUsersTest.java</include>
+
                     </includes>
                     <suiteXmlFiles>
-                        <!--                        <suiteXmlFile>target/test-classes/AmazonTestRunner.xml</suiteXmlFile>-->
-                        <!--                        <suiteXmlFile>target/test-classes/CNNTestRunner.xml</suiteXmlFile>-->
-                        <!--                        <suiteXmlFile>target/test-classes/CignaTestRunner.xml</suiteXmlFile>-->
 
                     </suiteXmlFiles>
 
