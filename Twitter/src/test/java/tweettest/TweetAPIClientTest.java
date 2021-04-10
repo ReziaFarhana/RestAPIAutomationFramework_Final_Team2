@@ -20,7 +20,7 @@ public class TweetAPIClientTest {
     @Test//create tweet-1 passed
     public void testUserCanTweetSuccessfully() {
         // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our First Tweet";
+        String tweet = "I Just Tweeted...yeahhh";
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
         // Verify that the tweet is successful
         response.statusCode(200);
@@ -33,7 +33,7 @@ public class TweetAPIClientTest {
     @Test//create tweet-2 passed
     public void testUserCanTweetSuccessfully2() {
         // User sent a tweet
-        String tweet = "We are learning Rest API using Rest Assured and our First Tweet"+ UUID.randomUUID().toString();
+        String tweet = "Thank God it is so sunny today!";
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
         System.out.println(response.extract().body().asPrettyString());
         // Verify that the tweet is successful
@@ -47,16 +47,17 @@ public class TweetAPIClientTest {
     @Test//create tweet-3 passed
     public void testUserCanTweet() {
         // User sent a tweet
-        String tweet = "Bootcamp project is so stressful "+ UUID.randomUUID().toString();
+        String tweet = "I am still working on API "+ UUID.randomUUID().toString();
         ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
+        System.out.println(response.extract().body().asPrettyString());
         response.statusCode(200);
         String actualTweet=response.extract().body().path("text");
         Assert.assertEquals(actualTweet,tweet,"Tweet don't match");
     }
     @Test//test-4-failed
     public void testUserCanDeleteTweet(){
-        String tweet="Bootcamp project is so stressful d933fd25-e040-4b3c-a285-d07d7b05b78c";
-        ValidatableResponse deleteResponse1=this.tweetAPIClient.deleteTweet(1378047777687678985l);
+        String tweet="Thank God it is so sunny today!";
+        ValidatableResponse deleteResponse1=this.tweetAPIClient.deleteTweet( 1380649917060939778l);
         deleteResponse1.statusCode(200);
         String actualTweet=deleteResponse1.extract().body().path("text");
         Assert.assertEquals(tweet,actualTweet);
@@ -77,6 +78,45 @@ public class TweetAPIClientTest {
         Assert.assertEquals(actualTweet,expectedMessage,"Tweet match");
         Assert.assertNotEquals("403",200);
     }
+    @Test
+    public void testUserIsableToCreateAnotherTweet(){
+        String tweet="I am practicing RestApi Tonight";
+        ValidatableResponse response = this.tweetAPIClient.createTweet(tweet);
+        response.statusCode(200);
+        String actualTweet=response.extract().body().path("text");
+        Assert.assertEquals(actualTweet,tweet,"Tweets don't match");
+
+    }
+@Test
+   public void userCanTweetTheMessageOnceMore(){
+        String tweet="I hope this tweet finds its page :)";
+        ValidatableResponse response=this.tweetAPIClient.createTweet(tweet);
+        response.statusCode(200);
+        String actualTweet=response.extract().body().path("text");
+        Assert.assertEquals(actualTweet,tweet,"tweet did not match");
+   }
+@Test
+   public void userShouldDeleteTweet(){
+        String tweet="I am still working on API 8c5fcfc1-d502-4f52-985e-7da4a4580271";
+        ValidatableResponse response=this.tweetAPIClient.deleteTweet(1380700880329129989L);
+        response.statusCode(200);
+        String actuaTweet=response.extract().body().path("text");
+        Assert.assertEquals(actuaTweet,tweet,"Tweet did not match");
+   }
+   @Test
+public void testShowsStatus(){
+    String tweet="I hope this tweet finds its page :)";
+    ValidatableResponse response=this.tweetAPIClient.showStatus(1380700533518966785L);
+    System.out.println(response.extract().body().asPrettyString());
+    response.statusCode(200);
+    String actuaTweet=response.extract().body().path("text");
+    Assert.assertEquals(actuaTweet,tweet,"Tweet did not match");
+
+}
+
+
+
+
 
 
 //    @Test(enabled = false)

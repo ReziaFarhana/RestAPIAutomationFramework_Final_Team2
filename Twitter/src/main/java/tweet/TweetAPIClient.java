@@ -14,6 +14,11 @@ public class TweetAPIClient extends RestAPI {
     private final String CREATE_TWEET_ENDPOINT="/statuses/update.json";
     private final String DELETE_TWEET_ENDPOINT="/statuses/destroy.json";
     private final String GET_USER_TWEET_ENDPOINT="/statuses/home_timeline.json";
+    private final String GET_USER_STATUS_SHOW="/statuses/show.json";
+    private final String POST_USER_RETWEET_ENDOINT="statuses/retweet/:id.json";
+
+
+
 
     // GET all Tweet Information
     public ValidatableResponse getUserTimeTweet(){
@@ -33,7 +38,7 @@ public class TweetAPIClient extends RestAPI {
     public ValidatableResponse deleteTweet(Long tweetId){
         return given().auth().oauth(this.apiKey,this.apiSecretKey,this.accessToken,this.accessTokenSecret)
                 .queryParam("id",tweetId)
-                .when().delete(this.baseUrl+this.DELETE_TWEET_ENDPOINT).then().statusCode(200);
+                .when().post(this.baseUrl+this.DELETE_TWEET_ENDPOINT).then().statusCode(200);
     }
 
 
@@ -63,6 +68,26 @@ public class TweetAPIClient extends RestAPI {
         String createdAt=pathEvaluator.get("id");
         System.out.println(createdAt);
     }
+
+    // Create a Tweet from user twitter
+    public ValidatableResponse showStatus(long tweetid){
+        return given().auth().oauth(this.apiKey,this.apiSecretKey, this.accessToken,this.accessTokenSecret)
+                .param("id",tweetid)
+                .when().get(this.baseUrl+this.GET_USER_STATUS_SHOW)
+                .then();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // OAuth
