@@ -32,7 +32,7 @@ public class TweetAPIClientTest {
         System.out.println(id);
         Assert.assertEquals(actualTweet, tweet, "Tweet is not match");
     }
-
+@Test
     public void testUserCanTweetSuccessfully3() {
         // User sent a tweet
         String tweet = "Today is My Day " + UUID.randomUUID().toString();
